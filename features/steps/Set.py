@@ -1,13 +1,21 @@
 from behave import *
 
-@given(u'the set colors is not defined')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Given the set colors is not defined')
+@given(u'the set {set:Set} is not defined')
+def step_impl(context, set):
+    assert context.SUT.defined(set) == False
 
-@when(u'we define colors with \'red,blue,green\'')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: When we define colors with \'red,blue,green\'')
+@when(u'we define {set:Set} with {elements:Enumeration}')
+def step_impl(context, set, elements):
+    context.SUT.define_set(set, elements)
 
-@then(u'the cardinality should be 3')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Then the cardinality should be 3')
+@then(u'the cardinality for {set:Set} should be {card:Number}')
+def step_impl(context, set, card):
+    assert context.SUT.get_cardinality(set) == card
+
+@then(u'the set {set:Set} should contain element {element:Element}')
+def step_impl(context, set, element):
+    assert context.SUT.contains(set, element)
+
+@then(u'the set {set:Set} should not contain element {element:Element}')
+def step_impl(context, set, element):
+    assert context.SUT.contains(set, element) == False
