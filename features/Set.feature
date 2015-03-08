@@ -1,7 +1,7 @@
 Feature: Defining a set
 
     As a developer
-    I want to be able to specify a set using a string
+    I want to be able to specify a set using a string enumeration
     So we can use the set in relations.
 
 Scenario Outline:   Defining a Set With Enumeration
