@@ -1,8 +1,8 @@
 Feature: Defining a set
 
-    As a developer
+    As a specifier
     I want to be able to specify a set using a string enumeration
-    So we can use the set in relations.
+    So we can use the set in specifications
 
 Scenario Outline:   Defining a Set With Enumeration
 

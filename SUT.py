@@ -4,9 +4,9 @@ SUT - System Under Test for Bhive Dev
 
 # for now, this is just a big monolithic object while I figure things out
 
-class SUT(object):
+class SETS(object):
     """
-    Used for testing POC.
+    Table of all Defined Sets
     """
     def __init__(self):
         self.sets = {}
@@ -40,3 +40,42 @@ class SUT(object):
         Tests membership of element in set 'set_name'
         """
         return element in self.sets[set_name]
+
+class FUNCTIONS(object):
+    """
+    Table of all defined functions
+    """
+    def __init__(self, sets):
+        self.functions = {}
+        self.sets = sets
+
+    def define_function(self, function_name, domain, range_):
+        if self.sets.is_set_defined(domain) and self.sets.is_set_defined(range_):
+            self.functions[function_name] = (domain, range_)
+        else:
+            raise TypeError
+
+    def is_function_defined(self, function_name):
+        return function_name in self.functions
+
+    def domain(self, function_name):
+        if self.is_function_defined(function_name):
+            (d, _) = self.functions[function_name]
+            return d
+        else:
+            raise KeyError
+
+    def range(self, function_name):
+        if self.is_function_defined(function_name):
+            (_, r) = self.functions[function_name]
+            return r
+        else:
+            raise KeyError
+
+class SUT(object):
+    """
+    Used for testing POC.
+    """
+    def __init__(self):
+        self.sets = SETS()
+        self.functions = FUNCTIONS(self.sets)
