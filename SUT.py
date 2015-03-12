@@ -47,11 +47,13 @@ class FUNCTIONS(object):
     """
     def __init__(self, sets):
         self.functions = {}
+        self.maps = {}
         self.sets = sets
 
     def define_function(self, function_name, domain, range_):
         if self.sets.is_set_defined(domain) and self.sets.is_set_defined(range_):
             self.functions[function_name] = (domain, range_)
+            self.maps[function_name] = {}
         else:
             raise TypeError
 
@@ -71,6 +73,19 @@ class FUNCTIONS(object):
             return r
         else:
             raise KeyError
+
+    def map(self, function_name, from_, to):
+        if self.is_function_defined(function_name):
+            self.maps[function_name][from_] = to;
+        else:
+            raise KeyError
+
+    def function_return(self, function_name, from_):
+        if self.is_function_defined(function_name):
+            return self.maps[function_name][from_];
+        else:
+            raise KeyError
+
 
 class SUT(object):
     """

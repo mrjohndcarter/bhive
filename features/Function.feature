@@ -4,7 +4,6 @@ As a specifier
 I want to be able to specify a function using previously defined sets
 So we can use the function in specifications
 
-@wip
 Scenario Outline: Defining a function
 
     Given Function <f> is not defined
@@ -19,3 +18,16 @@ Examples:
 
     | f          | domain        | range             |
     | pricing    | soda          | prices            |
+
+Scenario Outline: Adding to a function
+
+    Given Function <f> is defined
+    And the set <domain> should contain element <d>
+    And the set <range> should contain element <r>
+    When we map <d> to <r> in <f>
+    Then <f> should return <r> for <d>
+
+Examples:
+
+    | f          | domain   | range  |  d       |   r   |
+    | pricing    | soda     | prices |  orange  |   55  |

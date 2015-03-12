@@ -31,5 +31,8 @@ register_type(Function=parse_function)
 
 def before_scenario(context, scenario):
     context.SUT = SUT()
+
     context.SUT.sets.define_set_from_enumeration('soda', 'orange,coke,7up')
     context.SUT.sets.define_set_from_enumeration('prices', '75,55,19')
+
+    context.SUT.functions.define_function('pricing', 'soda', 'prices')
