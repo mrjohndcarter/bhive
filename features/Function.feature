@@ -16,8 +16,9 @@ Scenario Outline: Defining a function
 
 Examples:
 
-    | f          | domain        | range             |
-    | pricing    | soda          | prices            |
+    | f          | domain           | range         |
+    | parents    | baby_name        | animal_name   |
+    | dns        | domain_name      | ip            |
 
 Scenario Outline: Adding to a function
 

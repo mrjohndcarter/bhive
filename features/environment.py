@@ -34,5 +34,9 @@ def before_scenario(context, scenario):
 
     context.SUT.sets.define_set_from_enumeration('soda', 'orange,coke,7up')
     context.SUT.sets.define_set_from_enumeration('prices', '75,55,19')
+    context.SUT.sets.define_set_from_enumeration('baby_name', 'puppy,kid,kitten,foal')
+    context.SUT.sets.define_set_from_enumeration('animal_name', 'dog,goat,cat,horse')
+    context.SUT.sets.define_set_from_enumeration('domain_name', 'localhost,gateway,google-dns')
+    context.SUT.sets.define_set_from_enumeration('ip', '127.0.0.1,192.168.1.1,8.8.8.8')
 
     context.SUT.functions.define_function('pricing', 'soda', 'prices')
