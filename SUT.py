@@ -79,7 +79,7 @@ class FUNCTIONS(object):
             self.maps[function_name][from_] = to;
         else:
             raise KeyError
-
+        
     def function_return(self, function_name, from_):
         if self.is_function_defined(function_name):
             return self.maps[function_name][from_];

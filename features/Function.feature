@@ -26,7 +26,7 @@ Scenario Outline: Adding to a function
     And the set <domain> should contain element <d>
     And the set <range> should contain element <r>
     When we map <d> to <r> in <f>
-    Then <f> should return <r> for <d>
+    Then <f> returns <r> for <d>
 
 Examples:
 

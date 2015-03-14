@@ -32,6 +32,6 @@ def step_impl(context, function, domain):
 def step_impl(context, d, r, function):
     context.SUT.functions.map(function, d, r)
 
-@then(u'{function:Function} should return {r:Element} for {d:Element}')
+@then(u'{function:Function} returns {r:Element} for {d:Element}')
 def step_impl(context, function, r, d):
     assert context.SUT.functions.function_return(function,d) == r
