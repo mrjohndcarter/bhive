@@ -23,8 +23,8 @@ Examples:
 Scenario Outline: Adding to a function
 
     Given Function <f> is defined
-    And the set <domain> should contain element <d>
-    And the set <range> should contain element <r>
+    And the set <domain> contains element <d>
+    And the set <range> contains element <r>
     When we map <d> to <r> in <f>
     Then <f> returns <r> for <d>
 

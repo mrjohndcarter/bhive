@@ -4,7 +4,7 @@ from behave import given, when, then
 def step_impl(context, set_):
     assert context.SUT.sets.is_set_defined(set_) == False
 
-@given(u'the set {set_:Set} should contain element {element:Element}')
+@given(u'the set {set_:Set} contains element {element:Element}')
 def step_impl(context, set_, element):
     assert context.SUT.sets.set_contains(set_, element) == True
 
@@ -12,11 +12,11 @@ def step_impl(context, set_, element):
 def step_impl(context, set_, elements):
     context.SUT.sets.define_set_from_enumeration(set_, elements)
 
-@then(u'the cardinality for {set_:Set} should be {card:Number}')
+@then(u'the cardinality for {set_:Set} is {card:Number}')
 def step_impl(context, set_, card):
     assert context.SUT.sets.get_set_cardinality(set_) == card
 
-@then(u'the set {set_:Set} should contain element {element:Element}')
+@then(u'the set {set_:Set} contains element {element:Element}')
 def step_impl(context, set_, element):
     assert context.SUT.sets.set_contains(set_, element) == True
 

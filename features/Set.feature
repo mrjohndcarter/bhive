@@ -8,7 +8,7 @@ Scenario Outline:   Defining a Set With Enumeration
 
     Given the set <s> is not defined
     When we define <s> with <enumeration>
-    Then the cardinality for <s> should be <c>
+    Then the cardinality for <s> is <c>
 
 Examples:
 
@@ -19,7 +19,7 @@ Scenario Outline:   Testing Set Membership
 
     Given the set <s> is not defined
     When we define <s> with <enumeration>
-    Then the set <s> should contain element <e>
+    Then the set <s> contains element <e>
 
 Examples:
 

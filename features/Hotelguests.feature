@@ -9,8 +9,8 @@ Scenario Outline: Guest Checkin
     Given Set names is defined
     and Set rooms is defined
     and Function guests is defined
-    and the Set names should contain element <name>
-    and the Set rooms should contain element <room>
+    and the Set names contains element <name>
+    and the Set rooms contains element <room>
     when <name> checks into <room>
     then guests returns <name> for <room>
 
@@ -37,6 +37,19 @@ Examples:
 
 Scenario: Guest Query
 
-Scenario: Present Query
+@wip
+Scenario Outline: Present Query
 
-Scneario: Swap Guests
+    # basically a type definition (INVARIANT)
+    Given the Set names contains element <name>
+    when Range of guests contains element <name>
+    then <name> is present.
+    # predicate, should have a way to enforce NOT
+
+Examples:
+
+|   name    |
+|   Alice   |
+|   Bob     |
+
+#Scenario: Swap Guests
