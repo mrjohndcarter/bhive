@@ -35,9 +35,17 @@ Examples:
 |   Alice   |   2       |
 |   Bob     |   3       |
 
-Scenario: Guest Query
+Scenario Outline: Guest Query
 
-@wip
+    Given <name> checked into <room>
+    then a query for <room> returns <name>
+
+Examples:
+
+|   name    |   room    |
+|   Alice   |   2       |
+|   Bob     |   3       |
+
 Scenario Outline: Present Query
 
     # basically a type definition (INVARIANT)
@@ -52,4 +60,17 @@ Examples:
 |   Alice   |
 |   Bob     |
 
-#Scenario: Swap Guests
+
+Scenario Outline: Swap Guests
+
+    Given <name_a> checked into <room_a>
+    and <name_b> checked into <room_b>
+    when <room_a> is swapped with <room_b>
+    then guests returns <name_b> for <room_a>
+    and guests returns <name_a> for <room_b>
+
+Examples:
+
+|   name_a  |   room_a      |   name_b  |   room_b  |
+|   Alice   |   1           |   Bob     |   3       |
+|   Carol   |   penthouse   |   Bob     |   3       |
