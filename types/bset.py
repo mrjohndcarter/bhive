@@ -7,7 +7,6 @@ from itertools import product, chain, combinations
 
 
 class BSet(object):
-
     """
     Augments behavior provided by set
 
