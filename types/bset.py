@@ -5,7 +5,9 @@ Wraps python's mutable set.
 """
 from itertools import product, chain, combinations
 
+
 class BSet(object):
+
     """
     Augments behavior provided by set
 
@@ -69,13 +71,6 @@ class BSet(object):
         """
         self.value.remove(item)
 
-    def pop(self):
-        """
-        Removes a random element from the set?
-        """
-        # not useful
-        raise NotImplementedError
-
     # operations with other sets
 
     def issubset(self, iterable_t):
@@ -92,7 +87,8 @@ class BSet(object):
 
         b syntax: s <<: iterable_t
         """
-        return self.value.issubset(iterable_t) and len(iterable_t) > len(self.value)
+        return self.value.issubset(iterable_t) and len(
+            iterable_t) > len(self.value)
 
     def issuperset(self, iterable_t):
         """
@@ -144,14 +140,17 @@ class BSet(object):
 
         b syntax: pow(s)
         """
-        tuples = chain.from_iterable(combinations(self.value, r) for r in range(len(self.value) + 1))
+        tuples = chain.from_iterable(
+            combinations(self.value, r) for r in range(len(self.value) + 1))
         return BSet(sorted([BSet(a) for a in tuples]))
 
 # self tests
 
 import unittest
 
+
 class TestBSet(unittest.TestCase):
+
     """
     TestBSet
 
@@ -336,7 +335,8 @@ class TestBSet(unittest.TestCase):
         """
         Tests symmetric difference.
         """
-        assert self.abc_set.symmetric_difference(self.cde_set) == BSet(['a', 'b', 'd', 'e'])
+        assert self.abc_set.symmetric_difference(
+            self.cde_set) == BSet(['a', 'b', 'd', 'e'])
 
     def test_cartestian(self):
         """
@@ -357,7 +357,8 @@ class TestBSet(unittest.TestCase):
 
         assert len(cart_product) == 9
         assert cart_product_actual == cart_product
-        assert self.abc_set.cartestian_product(self.empty_set) == self.empty_set
+        assert self.abc_set.cartestian_product(
+            self.empty_set) == self.empty_set
 
     def test_powerset(self):
         """
