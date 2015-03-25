@@ -21,14 +21,14 @@ class BSet(object):
     def __contains__(self, item):
         return item in self.value
 
-    # mutable -> so no __hash__
+    def __hash__(self):
+        # yeah -- it's weird
+        # need to define a consistent hash so that we fall back to __eq__
+        # default hash just uses id
+        return 42
 
     def __eq__(self, iterable):
-        sym_diff = self.value.symmetric_difference(iterable)
-
-        for a in sym_diff:
-            print a
-
+        sym_diff = BSet(self.value.symmetric_difference(iterable))
         return len(sym_diff) == 0
 
     def __iter__(self):
@@ -128,7 +128,6 @@ class BSet(object):
         """
         Returns symmetric difference of set and iterable_t
         """
-        # FIXME: bug for sets of sets?
         return BSet(self.value.symmetric_difference(iterable_t))
 
     def cartestian_product(self, iterable_t):
@@ -364,8 +363,8 @@ class TestBSet(unittest.TestCase):
         """
         Tests calculating powerset of a set.
         """
-        power_set_actual = BSet([])
-        power_set_actual.add(BSet());
+        power_set_actual = BSet()
+        power_set_actual.add(BSet())
         power_set_actual.add(BSet(['a']))
         power_set_actual.add(BSet(['b']))
         power_set_actual.add(BSet(['c']))
@@ -379,6 +378,18 @@ class TestBSet(unittest.TestCase):
         # number of subsets is 2^N where N is len(S)
         assert len(power_set) == 2 ** len(self.abc_set)
         assert power_set_actual == power_set
+
+    def test_set_of_sets1(self):
+        """
+        Tests equality between two sets containing sets.
+        """
+        set_a = BSet()
+        set_a.add(self.abc_set)
+
+        set_b = BSet()
+        set_b.add(self.abc_set)
+
+        assert set_a == set_b
 
 if __name__ == '__main__':
     unittest.main()
