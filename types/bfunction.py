@@ -19,35 +19,47 @@ class BFunction(object):
         self.function_range = func_range
         self.mapping = defaultdict(BSet)
 
-    def __contains__(self, d):
-        return d in self.mapping
+    def __contains__(self, domain_element):
+        """
+        Tests for a mapping of domain_element.
+        """
+        return domain_element in self.mapping
 
     def __len__(self):
+        """
+        Returns number of mappings in the function.
+        """
         return len(self.mapping)
 
-    def __delitem__(self, d):
-        del(self.mapping[d])
+    def __delitem__(self, domain_element):
+        """
+        Deletes a mapping from the function.
+        """
+        del self.mapping[domain_element]
 
-    def __getitem__(self, d):
+    def __getitem__(self, domain_element):
         """
         Returns a BSet of Values mapped from d
 
         Raises KeyError if d not present
         """
-        # TODO: don't return a set if only mapped to single value
-        if d not in self.mapping:
+        if domain_element not in self.mapping:
             raise KeyError
-        return self.mapping[d]
 
-    def __setitem__(self, d, r):
-        if d not in self.function_domain:
+        return self.mapping[domain_element]
+
+    def __setitem__(self, domain_element, range_element):
+        """
+        Creates a mapping from d -> r.
+        """
+        if domain_element not in self.function_domain:
             raise KeyError
-        if r not in self.function_range:
+        if range_element not in self.function_range:
             raise ValueError
-        if d in self.mapping:
-            self.mapping[d].add(r)
+        if domain_element in self.mapping:
+            self.mapping[domain_element].add(range_element)
         else:
-            self.mapping[d] = BSet([r])
+            self.mapping[domain_element] = BSet([range_element])
 
     def domain(self):
         """
@@ -69,10 +81,10 @@ class BFunction(object):
         """
         # TODO: optimize!
         built_range = BSet()
-        for d in domain_set:
+        for element in domain_set:
             # just skip missing keys
-            if d in self.mapping:
-                for value_list in self[d]:
+            if element in self.mapping:
+                for value_list in self[element]:
                     built_range.add(value_list)
         return built_range
 
@@ -113,7 +125,7 @@ class TestBFunction(unittest.TestCase):
         self.vowels.add('u')
 
         # natural numbers <= 10
-        self.nat10 = BSet([0,1,2,3,4,5,6,7,8,9,10])
+        self.nat10 = BSet([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 
         self.vowel_mapping = BFunction(self.vowels, self.nat10)
         self.vowel_mapping['a'] = 0
@@ -127,9 +139,9 @@ class TestBFunction(unittest.TestCase):
 
         self.car_owners = BFunction(self.people, self.cars)
 
-        self.car_owners['alice'] = 'jetta';
-        self.car_owners['alice'] = 'passat';
-        self.car_owners['bob'] = 'golf';
+        self.car_owners['alice'] = 'jetta'
+        self.car_owners['alice'] = 'passat'
+        self.car_owners['bob'] = 'golf'
 
     def test_empty(self):
         """
@@ -169,8 +181,8 @@ class TestBFunction(unittest.TestCase):
         vowel_mapping['u'] = 8
         vowel_mapping['u'] = 3
 
-        vowels = ['a','e','i','o','u']
-        numbers = [BSet([0]), BSet([1]), BSet([2]), BSet([4]), BSet([3,8])]
+        vowels = ['a', 'e', 'i', 'o', 'u']
+        numbers = [BSet([0]), BSet([1]), BSet([2]), BSet([4]), BSet([3, 8])]
 
         for i in range(len(vowels)):
             assert vowel_mapping[vowels[i]] == numbers[i]
@@ -199,7 +211,7 @@ class TestBFunction(unittest.TestCase):
         """
         Test deleting mappings.
         """
-        vowels = ['a','e','i','o','u']
+        vowels = ['a', 'e', 'i', 'o', 'u']
 
         for i in range(5):
             del self.vowel_mapping[vowels[i]]
@@ -209,25 +221,31 @@ class TestBFunction(unittest.TestCase):
         """
         Test getting domain of function.
         """
-        assert self.vowel_mapping.domain() == BSet(['a','e','i','o','u'])
+        assert self.vowel_mapping.domain() == BSet(['a', 'e', 'i', 'o', 'u'])
         del self.vowel_mapping['a']
-        assert self.vowel_mapping.domain() == BSet(['e','i','o','u'])
+        assert self.vowel_mapping.domain() == BSet(['e', 'i', 'o', 'u'])
 
     def test_range(self):
         """
         Test getting range of function.
         """
-        assert self.vowel_mapping.range() == BSet([0,1,2,4,8])
+        assert self.vowel_mapping.range() == BSet([0, 1, 2, 4, 8])
         del self.vowel_mapping['a']
-        assert self.vowel_mapping.range() == BSet([1,2,4,8])
+        assert self.vowel_mapping.range() == BSet([1, 2, 4, 8])
         self.vowel_mapping['e'] = 6
-        assert self.vowel_mapping.range() == BSet([1,2,4,6,8])
+        assert self.vowel_mapping.range() == BSet([1, 2, 4, 6, 8])
 
     def test_domain_restriction(self):
+        """
+        Tests getting values for a subset of the domain.
+        """
         assert self.car_owners.domain_restriction(BSet(['alice'])) == BSet(['jetta', 'passat'])
         assert self.car_owners.domain_restriction(BSet(['david'])) == BSet([])
 
     def test_range_restriction(self):
-        self.car_owners['bob'] = 'jetta';
+        """
+        Test getting domain elements for a subset of the range.
+        """
+        self.car_owners['bob'] = 'jetta'
         assert self.car_owners.range_restriction(BSet(['golf'])) == BSet(['bob'])
         assert self.car_owners.range_restriction(BSet(['jetta'])) == BSet(['alice', 'bob'])

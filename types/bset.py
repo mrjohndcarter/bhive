@@ -143,11 +143,6 @@ class BSet(object):
             combinations(self.value, r) for r in range(len(self.value) + 1))
         return BSet(sorted([BSet(a) for a in tuples]))
 
-    def keys(self):
-        return BSet(self.value.keys())
-
-    def values(self):
-        return BSet(self.value.values())
 
 # self tests
 
