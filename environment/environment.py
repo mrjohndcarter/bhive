@@ -24,8 +24,10 @@ class BEnvironment(object):
     Collects contexts for all machines.
     """
 
-    def __init__(self):
+    def __init__(self, enable_output):
         self.machines = {}
+        self.stdout = True
+        self.stderr = True
 
     def add_context(self, machine_name, machine_context):
         """
@@ -53,21 +55,21 @@ def register_b_types(context):
     # register sequence
 
 
-def initialize_bhive(context):
+def initialize_bhive(context, enable_output=True):
     """
     Does everything that needs to happen after behave.
 
     Should be first call from behave's before_all
     """
-    initialize_behive_environment(context)
+    initialize_behive_environment(context, enable_output)
     register_b_types(context)
 
 
-def initialize_behive_environment(context):
+def initialize_behive_environment(context, enable_output):
     """
     Creates an empty context and attaches it to behave's context object.
     """
-    context.bhive_environment = BEnvironment()
+    context.bhive_environment = BEnvironment(enable_output)
 
 
 def finalize_bhive(context):
