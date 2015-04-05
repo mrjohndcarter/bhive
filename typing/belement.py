@@ -2,7 +2,9 @@
 An element in a Set.
 """
 
+
 class BElement(object):
+
     """
     BElement
 
@@ -22,7 +24,9 @@ class BElement(object):
 
 import unittest
 
+
 class TestBElement(unittest.TestCase):
+
     """
     TestBElement
 

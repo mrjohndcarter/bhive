@@ -4,7 +4,9 @@ Represents the constraints, invariants and state of a B Machine.
 
 # TODO create a context from the as a statement in a feature file.
 
+
 class BContext(object):
+
     """
     The data and typing elements for a B Machine.
     """
@@ -49,6 +51,7 @@ class BContext(object):
         Initialized using add_initialisation.
         Typed using add_invariant.
         """
+        # TODO verify no namespace collision with sets
         pass
 
     def get_set(self, name):
@@ -57,13 +60,32 @@ class BContext(object):
         """
         return self.sets[name]
 
+    def is_set_defined(self, name):
+        """
+        Is the set defined?
+        """
+        return name in self.sets
+
+    def register_type(self, type_name, b_type):
+        """
+        Registers a type.
+
+        b_type can be 'Set', 'Function'
+
+        Takes a type_name and a parse_function.
+        Will call register_type for Behave
+        """
+        pass
+
 # self tests
 
 import unittest
 
-from bset import BSet
+from bhive.typing.bset import BSet
+
 
 class TestBContext(unittest.TestCase):
+
     """
     TestBContext
 
@@ -87,7 +109,8 @@ class TestBContext(unittest.TestCase):
         Tests adding a set to a context.
         """
         self.test_context.add_set('digits', self.digit_set)
-        assert self.test_context.get_set('digits') == BSet([1, 2, 3, 4, 5, 6, 7, 8, 9, 0])
+        assert self.test_context.get_set('digits') == BSet(
+            [1, 2, 3, 4, 5, 6, 7, 8, 9, 0])
 
     if __name__ == '__main__':
         unittest.main()

@@ -4,16 +4,19 @@ A function
 A relationship between two sets.
 """
 
-from bset import BSet
+from bhive.typing.bset import BSet
 
 from collections import defaultdict
 
 from itertools import chain
 
+
 class BFunction(object):
+
     """
     Maps domain set to range set.
     """
+
     def __init__(self, func_domain, func_range):
         self.function_domain = func_domain
         self.function_range = func_range
@@ -239,7 +242,8 @@ class TestBFunction(unittest.TestCase):
         """
         Tests getting values for a subset of the domain.
         """
-        assert self.car_owners.domain_restriction(BSet(['alice'])) == BSet(['jetta', 'passat'])
+        assert self.car_owners.domain_restriction(
+            BSet(['alice'])) == BSet(['jetta', 'passat'])
         assert self.car_owners.domain_restriction(BSet(['david'])) == BSet([])
 
     def test_range_restriction(self):
@@ -247,5 +251,9 @@ class TestBFunction(unittest.TestCase):
         Test getting domain elements for a subset of the range.
         """
         self.car_owners['bob'] = 'jetta'
-        assert self.car_owners.range_restriction(BSet(['golf'])) == BSet(['bob'])
-        assert self.car_owners.range_restriction(BSet(['jetta'])) == BSet(['alice', 'bob'])
+        assert self.car_owners.range_restriction(
+            BSet(
+                ['golf'])) == BSet(
+            ['bob'])
+        assert self.car_owners.range_restriction(
+            BSet(['jetta'])) == BSet(['alice', 'bob'])

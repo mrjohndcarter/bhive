@@ -3,7 +3,7 @@
 
 ## running tests
 
-nosetests [filename]
+run_all_tests.sh
 
 ## autoformatting:
 
@@ -16,5 +16,5 @@ autopep8 --in-place --aggressive --aggressive <filename>
 ### optional
 
 - autopep8
-- nose
+- green (previously used nose)
 - pylint

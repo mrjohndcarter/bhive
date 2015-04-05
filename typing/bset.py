@@ -7,11 +7,24 @@ from itertools import product, chain, combinations
 
 
 class BSet(object):
+
     """
     Augments behavior provided by set
 
     Uses aggregation to implement a more functional set.
     """
+
+    @staticmethod
+    def parse_from_string(string):
+        """
+        Returns a BSet as parsed from the comma separated string.
+
+        Note: We currently parse a set of strings.
+        """
+        element_list = []
+        for an_element in string.split(','):
+            element_list.append(an_element.strip())
+        return BSet(element_list)
 
     def __init__(self, iterable=None):
         if iterable:
@@ -203,6 +216,14 @@ class TestBSet(unittest.TestCase):
         """
         new_set_abc = BSet(['a', 'b', 'c'])
         assert new_set_abc == self.abc_set
+
+    def test_parse_from_string(self):
+        """
+        Tests creation of a set from a string.
+
+        Note: This creates a set
+        """
+        assert BSet.parse_from_string('a, b, c') == self.abc_set
 
     def test_add(self):
         """
