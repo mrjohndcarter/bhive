@@ -1,7 +1,7 @@
 """
-A function
+Relation
 
-A relationship between two sets.
+A relatioship between two Sets.
 """
 
 from bhive.typing.bset import BSet
@@ -11,15 +11,14 @@ from collections import defaultdict
 from itertools import chain
 
 
-class BFunction(object):
-
+class BRelation(object):
     """
     Maps domain set to range set.
     """
 
-    def __init__(self, func_domain, func_range):
-        self.function_domain = func_domain
-        self.function_range = func_range
+    def __init__(self, relation_domain, relation_range):
+        self.relation_domain = relation_domain
+        self.relation_range = relation_range
         self.mapping = defaultdict(BSet)
 
     def __contains__(self, domain_element):
@@ -55,9 +54,9 @@ class BFunction(object):
         """
         Creates a mapping from d -> r.
         """
-        if domain_element not in self.function_domain:
+        if domain_element not in self.relation_domain:
             raise KeyError
-        if range_element not in self.function_range:
+        if range_element not in self.relation_range:
             raise ValueError
         if domain_element in self.mapping:
             self.mapping[domain_element].add(range_element)
@@ -110,10 +109,10 @@ class BFunction(object):
 import unittest
 
 
-class TestBFunction(unittest.TestCase):
+class TestBRelation(unittest.TestCase):
 
     """
-    TestBFunction
+    TestBRelation
 
     Tests BSet.
     """
@@ -130,7 +129,7 @@ class TestBFunction(unittest.TestCase):
         # natural numbers <= 10
         self.nat10 = BSet([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 
-        self.vowel_mapping = BFunction(self.vowels, self.nat10)
+        self.vowel_mapping = BRelation(self.vowels, self.nat10)
         self.vowel_mapping['a'] = 0
         self.vowel_mapping['e'] = 1
         self.vowel_mapping['i'] = 2
@@ -140,7 +139,7 @@ class TestBFunction(unittest.TestCase):
         self.cars = BSet(['jetta', 'golf', 'cabriolet', 'passat'])
         self.people = BSet(['alice', 'bob', 'carol', 'david'])
 
-        self.car_owners = BFunction(self.people, self.cars)
+        self.car_owners = BRelation(self.people, self.cars)
 
         self.car_owners['alice'] = 'jetta'
         self.car_owners['alice'] = 'passat'
@@ -150,14 +149,14 @@ class TestBFunction(unittest.TestCase):
         """
         Test empty function.
         """
-        vowel_mapping = BFunction(self.vowels, self.nat10)
+        vowel_mapping = BRelation(self.vowels, self.nat10)
         assert len(vowel_mapping) == 0
 
     def test_set(self):
         """
         Test mapping d -> r
         """
-        vowel_mapping = BFunction(self.vowels, self.nat10)
+        vowel_mapping = BRelation(self.vowels, self.nat10)
         vowel_mapping['a'] = 0
         vowel_mapping['e'] = 1
         vowel_mapping['i'] = 2
@@ -176,7 +175,7 @@ class TestBFunction(unittest.TestCase):
         """
         Test getting r from a d.
         """
-        vowel_mapping = BFunction(self.vowels, self.nat10)
+        vowel_mapping = BRelation(self.vowels, self.nat10)
         vowel_mapping['a'] = 0
         vowel_mapping['e'] = 1
         vowel_mapping['i'] = 2
@@ -196,7 +195,7 @@ class TestBFunction(unittest.TestCase):
         """
         Test that we can't map values outside of domain/ranges.
         """
-        vowel_mapping = BFunction(self.vowels, self.nat10)
+        vowel_mapping = BRelation(self.vowels, self.nat10)
         vowel_mapping['a'] = 0
         vowel_mapping['e'] = 1
         vowel_mapping['i'] = 2
@@ -252,8 +251,6 @@ class TestBFunction(unittest.TestCase):
         """
         self.car_owners['bob'] = 'jetta'
         assert self.car_owners.range_restriction(
-            BSet(
-                ['golf'])) == BSet(
-            ['bob'])
+            BSet(['golf'])) == BSet(['bob'])
         assert self.car_owners.range_restriction(
             BSet(['jetta'])) == BSet(['alice', 'bob'])
