@@ -12,14 +12,148 @@ from itertools import chain
 
 
 class BRelation(object):
+
     """
     Maps domain set to range set.
     """
 
-    def __init__(self, relation_domain, relation_range):
+    def partial_function(self):
+        """
+        Returns true if this relation is a partial function.
+
+        Also used a key to represent the type of relation.
+        """
+        return False
+
+    def total_function(self):
+        """
+        Returns true if this relation is a total function.
+
+        Also used a key to represent the type of relation.
+        """
+        return False
+
+    def partial_injection(self):
+        """
+        Returns true if this relation is a partial injection.
+
+        Also used a key to represent the type of relation.
+        """
+        return False
+
+    def total_injection(self):
+        """
+        Returns true if this relation is a total injection.
+
+        Also used a key to represent the type of relation.
+        """
+        return False
+
+    def partial_surjection(self):
+        """
+        Returns true if this relation is a partial surjection.
+
+        Also used a key to represent the type of relation.
+        """
+        return False
+
+    def total_surjection(self):
+        """
+        Returns true if this relation is a total surjection.
+
+        Also used a key to represent the type of relation.
+        """
+        return False
+
+    def total_bijection(self):
+        """
+        Returns true if this relation is a total bijection (injective, surjective)
+
+        Also used a key to represent the type of relation.
+        """
+        return False
+
+    # relation and function opertor symbols
+    function_properties = {
+        # maps function types to symbols:
+        partial_function: {'symbol': '+->', 'description' : 'Partial Function'},
+        total_function: {'symbol': '-->', 'description' :  'Total Function'},
+        partial_injection: {'symbol': ' >+>', 'description' : 'Partial Injection'},
+        total_injection: {'symbol': '>->', 'description' : 'Total Injection'},
+        partial_surjection: {'symbol': ' +->>', 'description' : 'Partial Surjection'},
+        total_surjection: {'symbol': ' -->>', 'description' : 'Total Surjection'},
+        total_bijection: {'symbol': '>->>', 'description' : 'Total Bijection'},
+    }
+
+    function_operators = {
+        '+->': partial_function,
+        '-->': total_function,
+        '>+>': partial_injection,
+        '>->': total_injection,
+        '+->>': partial_surjection,
+        '-->>': total_surjection,
+        '>->>': total_bijection
+    }
+
+    maplet = '|->'
+
+    @staticmethod
+    def split_maplet(maplet_string):
+        """
+        Utility method to split a string into 3 parts of maplet
+
+        d (operator) r
+
+        """
+        split_array = maplet_string.strip().split(' ')
+        return (split_array[0].strip(), split_array[1].strip(), split_array[2].strip())
+
+    @staticmethod
+    def parse_from_string(string):
+        """
+        Returns a BRelation as parsed from the comma separated maplets.
+
+        E.g.:
+
+        "(SET operator SET), a |-> b, a |-> d"
+
+        """
+        maplet_list = string.split(',')
+
+        print maplet_list
+
+        (domain_operand, relation_operator, range_operand) = BRelation.split_maplet(maplet_list.pop(0))
+
+        if relation_operator not in BRelation.function_operators:
+            raise SyntaxError
+
+        new_relation = BRelation(domain_operand, range_operand, relation_operator)
+
+        for current_maplet in maplet_list:
+            (domain_operand, relation_operator, range_operand) = BRelation.split_maplet(current_maplet)
+
+            if relation_operator != BRelation.maplet:
+                print relation_operator
+                raise SyntaxError
+
+            new_relation[domain_operand] = range_operand
+
+        # verify the rule applies
+
+        return new_relation
+
+    def __init__(
+            self,
+            relation_domain,
+            relation_range,
+            relation_rule=None):
+
         self.relation_domain = relation_domain
         self.relation_range = relation_range
         self.mapping = defaultdict(BSet)
+
+        # a relation rule of None is just a general relation
+        self.relation_rule = relation_rule
 
     def __contains__(self, domain_element):
         """
@@ -32,6 +166,11 @@ class BRelation(object):
         Returns number of mappings in the function.
         """
         return len(self.mapping)
+
+    def __str__(self):
+        relation_symbol = '|->' if not self.relation_rule else self.relation_rule
+        build_string = self.relation_domain + relation_rule + self.relation_range
+        return build_string
 
     def __delitem__(self, domain_element):
         """
@@ -104,13 +243,17 @@ class BRelation(object):
                     built_domain.add(key)
         return built_domain
 
+    def is_function(self):
+        """
+        Is the relation a function?
+        """
+
 # self tests
 
 import unittest
 
 
 class TestBRelation(unittest.TestCase):
-
     """
     TestBRelation
 
@@ -254,3 +397,13 @@ class TestBRelation(unittest.TestCase):
             BSet(['golf'])) == BSet(['bob'])
         assert self.car_owners.range_restriction(
             BSet(['jetta'])) == BSet(['alice', 'bob'])
+
+    def test_parse_from_string(self):
+        """
+        Tests parsing a relation from a string of maplets.
+        """
+        dir(self)
+        print BRelation.parse_from_string('NUM +-> LETTERS, a |-> b, c |-> d')
+
+if __name__ == '__main__':
+    unittest.main()
