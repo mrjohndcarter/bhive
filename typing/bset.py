@@ -5,6 +5,7 @@ Wraps python's mutable set.
 """
 from itertools import product, chain, combinations
 
+#TODO: Set step library.
 
 class BSet(object):
 

@@ -10,6 +10,7 @@ from collections import defaultdict
 
 from itertools import chain
 
+#TODO: Relation step library.
 
 class BRelation(object):
 

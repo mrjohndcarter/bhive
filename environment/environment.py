@@ -14,7 +14,13 @@ from behave import register_type
 from ..typing import bset
 from ..typing import brelation
 
+# horizonal rule to help separate output
+BHIVE_HR = '---------------------------------------------------------------'
+
+# format string for log statements
 BHIVE_LOGGING_FORMAT = '%(asctime)-15s %(feature)s %(scenario)s %(step)s %(message)s'
+
+# how to format time in BHIVE_LOGGING_FORMAT
 BHIVE_LOGGING_DATE_FORMAT = '%m/%d/%Y %I:%M:%S %p'
 
 
@@ -35,66 +41,68 @@ class BHiveIntegration(object):
         """
         Run before each step.  Should be called from behave's before_step.
         """
-        pass
+        context.log_debug('Before Step: %s' % step)
 
     @staticmethod
     def after_step(context, step):
         """
         Run after each step.  Should be called from behave's after_step.
         """
-        pass
+        context.log_debug('After Step: %s' % step)
 
     @staticmethod
     def before_scenario(context, scenario):
         """
         Run before each scenario.  Should be called from behave's before_scenario.
         """
-        pass
+        context.log_debug('Before Scenario: %s' % scenario)
 
     @staticmethod
     def after_scenario(context, scenario):
         """
         Run after each scenario.  Should be called from behave's after_scenario.
         """
-        pass
+        context.log_debug('After Scenario: %s' % scenario)
 
     @staticmethod
     def before_feature(context, feature):
         """
         Run before each feature file.  Should be called from behave's before_feature.
         """
-        pass
+        context.log_debug('Before Feature: %s' % feature)
 
     @staticmethod
     def after_feature(context, feature):
         """
         Run after each feature file.  Should be called from behave's after_feature.
         """
-        pass
+        context.log_debug('After Feature: %s' % feature)
 
     @staticmethod
     def before_tag(context, tag):
         """
         Run before each tag.  Should be called from behave's before_tag.
         """
-        pass
+        context.log_debug('Before Tag: %s' % tag)
 
     @staticmethod
     def after_tag(context, tag):
         """
         Run after each tag.  Should be called from behave's after_tag.
         """
-        pass
+        context.log_debug('After Tag: %s' % tag)
 
     @staticmethod
     def before_all(context):
         """
         Run before behave.  Should be called from behave's before_all.
         """
+        print BHIVE_HR
+
         BHiveLogging.configure_logging(context)
         context.log_info('Initialized logging.')
 
-        BHiveTyping.register_b_types(context)
+        BHiveTyping.declare_b_types(context)
         context.log_info('Registered B types.')
 
         # TODO: setup environment
@@ -107,7 +115,7 @@ class BHiveIntegration(object):
         # TODO: synthesize
 
         context.log_info('BHive completed.')
-        pass
+        print BHIVE_HR
 
 
 class BHiveLogging(object):
@@ -144,17 +152,39 @@ class BHiveLogging(object):
         context.logger.addHandler(context.logging_handler)
 
         # bind log levels into various functions
-        context.log_critical = partial(BHiveLogging.log, context.logger, logging.CRITICAL)
-        context.log_debug = partial(BHiveLogging.log, context.logger, logging.DEBUG)
-        context.log_error = partial(BHiveLogging.log, context.logger, logging.ERROR)
-        context.log_info = partial(BHiveLogging.log, context.logger, logging.INFO)
-        context.log_warning = partial(BHiveLogging.log, context.logger, logging.WARNING)
+        context.log_critical = partial(
+            BHiveLogging.log,
+            context.logger,
+            logging.CRITICAL)
+        context.log_debug = partial(
+            BHiveLogging.log,
+            context.logger,
+            logging.DEBUG)
+        context.log_error = partial(
+            BHiveLogging.log,
+            context.logger,
+            logging.ERROR)
+        context.log_info = partial(
+            BHiveLogging.log,
+            context.logger,
+            logging.INFO)
+        context.log_warning = partial(
+            BHiveLogging.log,
+            context.logger,
+            logging.WARNING)
 
     @staticmethod
     def log(logger, log_level, message, bhive_extra=None):
+        """
+        Helper log method.
+
+        Used to curry various logging methods in configure_logging.
+        Not meant to be called directly.
+        """
 
         if not bhive_extra:
-            # if the behive details weren't specified, just fill in an empty object
+            # if the behive details weren't specified, just fill in an empty
+            # object
             logger.log(log_level, message, extra={
                 'feature': '',
                 'scenario': '',
@@ -164,168 +194,94 @@ class BHiveLogging(object):
 
 
 class BHiveTyping(object):
+    """
+    Namespace for all BHive related typing mechanisms.
+    """
+    @staticmethod
+    def register_user_type(context, name, parse_function):
+        """
+        Registers a user-defined bhive type (and registers it with behave).
+        """
+        # build a dict, pass it as kwargs
+        # register type just takes TypeName=Function as its arguments
+        # and adds to its internal dict of types
+        register_type(**{name: parse_function})
+        context.log_debug('Registered type: %s' % (name))
 
     @staticmethod
-    def register_b_types(context):
+    def define_user_variable(context, name, type, enumeration):
+        # TODO: variable name
+        # TODO: invariant (typing on variable)
+        # TODO: initialisation
+        pass
+
+    @staticmethod
+    def define_user_constant(context, name):
+        # TODO: define constant
+        # TODO: do we need type or value?
+        pass
+
+    @staticmethod
+    def define_user_set(context, name, enumeration=None):
+        # TODO: define set
+        # TODO: parse enumeration
+        # TODO: if enumeration not defined, then add elements like:
+        #   name1, name2, name3, etc.
+        # what do these look like in a .feature?
+
+    # TODO: what do with properties?
+    # TODO: what to do with constraints?
+
+
+    @staticmethod
+    def declare_b_types(context):
         """
         Registers all the 'atomic' B types (Set, Function)
+
+        Not meant to be called directly.
         """
         # register set
-        register_type(Set=bset.BSet.parse_from_string)
+        # register_type(Set=bset.BSet.parse_from_string)
+
+        BHiveTyping.register_user_type(
+            context,
+            'Set',
+            bset.BSet.parse_from_string)
 
         # register NAT
         # register NAT1
         # register relation
-        register_type(Relation=brelation.BRelation.parse_from_string)
+        # register_type(Relation=brelation.BRelation.parse_from_string)
+
+        BHiveTyping.register_user_type(
+            context,
+            'Relation',
+            brelation.BRelation.parse_from_string)
+
         # register sequence
 
+        # register_type(Foo=brelation.BRelation.parse_from_string)
+
+    # TODO: move
+
+    # @staticmethod
+    # def define_b_sets(context):
+    #     """
+    #     Defines all basic B types NAT, NAT1
+    #     """
+    #     pass
+
+class BHiveAddressSpace(object):
+
+    # TODO: These are going to have to be machine specific
+
     @staticmethod
-    def register_user_type(context, name, parse_function):
+    def declare(context, name, type):
         pass
 
-# class BEnvironment(object):
-#
-#     """
-#     Top level bhive object.
-#
-#     Collects contexts for all machines.
-#     """
-#
-#     def __init__(self, enable_output):
-#         self.machines = {}
-#         self.stdout = True
-#         self.stderr = True
-#         self.sets = {}
-#
-#     def add_context(self, machine_name, machine_context):
-#         """
-#         Adds a context to the environment.
-#         """
-#         self.machines[machine_name] = machine_context
-#
-#     def get_context(self, machine_name):
-#         """
-#         Accessor for a context from the environment.
-#         """
-#         self.machines[machine_name]
-
-# def initialize_bhive(context, enable_output=True):
-#     """
-#     Does everything that needs to happen after behave.
-#
-#     Should be first call from behave's before_all
-#     """
-#     initialize_behive_environment(context, enable_output)
-#     register_b_types(context)
-#
-#
-# def initialize_behive_environment(context, enable_output):
-#     """
-#     Creates an empty context and attaches it to behave's context object.
-#     """
-#     #context.bhive_environment = BEnvironment(enable_output)
-#
-#
-# def finalize_bhive(context):
-#     """
-#     Does everything that happens for bhive after a behave invocation.
-#     """
-#     synthesis.synthesize(context)
+    @staticmethod
+    def define(context, name, type, expression):
+        pass
 
 
-# How to use:
-##
-# Main should call initialize_bhive initially and finalize_bhive finally
-
-
-# self tests
-
-# import unittest
-#
-#
-# class TestBEnvironment(unittest.TestCase):
-#
-#     """
-#     TestBEnvironment
-#
-#     Tests BEnvironment setup
-#     """
-#
-#     def test_creation(self):
-#         """
-#         Tests environment setup.
-#         """
-#         pass
-#
-#     if __name__ == '__main__':
-#         unittest.main()
-
-
-# these define parse functions for types
-
-#
-# def parse_number(text):
-#     return int(text)
-#
-#
-# def parse_set(text):
-#     return text
-#
-#
-# def parse_enumeration(text):
-#     return text
-#
-#
-# def parse_element(text):
-#     return text
-#
-#
-# def parse_function(text):
-#     return text
-#
-# # these register types
-# # TODO : come up with a set of 'atomics' -- Set, Function, Element,
-# # Domain, Range ??
-# register_type(Number=parse_number)
-# register_type(Set=parse_set)
-# register_type(Enumeration=parse_enumeration)
-# register_type(Element=parse_element)
-# register_type(Function=parse_function)
-#
-# # setup / teardown stuff
-#
-#
-# def before_scenario(context, scenario):
-#     context.SUT = SUT()
-#
-#     # TODO : need a way to define these easier, and then have environment
-#     # bring them in
-#     context.SUT.sets.define_set_from_enumeration('soda', 'orange,coke,7up')
-#     context.SUT.sets.define_set_from_enumeration('prices', '75,55,19')
-#     context.SUT.sets.define_set_from_enumeration(
-#         'baby_name',
-#         'puppy,kid,kitten,foal')
-#     context.SUT.sets.define_set_from_enumeration(
-#         'animal_name',
-#         'dog,goat,cat,horse')
-#     context.SUT.sets.define_set_from_enumeration(
-#         'domain_name',
-#         'localhost,gateway,google-dns')
-#     context.SUT.sets.define_set_from_enumeration(
-#         'ip',
-#         '127.0.0.1,192.168.1.1,8.8.8.8')
-#     context.SUT.sets.define_set_from_enumeration(
-#         'names',
-#         'Alice,Bob,Carol,Dave,empty')
-#     context.SUT.sets.define_set_from_enumeration('rooms', '1,2,3,penthouse')
-#
-#     # TODO : need a way to define these easier, and then have environment bring them in
-#     # TODO : these don't have a property yet
-#     context.SUT.functions.define_function('pricing', 'soda', 'prices')
-#     context.SUT.functions.define_function('guests', 'rooms', 'names')
-#
-#     # TODO : need a way to initialize functions
-#     context.SUT.functions.map('guests', '1', 'empty')
-#     context.SUT.functions.map('guests', '2', 'empty')
-#     context.SUT.functions.map('guests', '3', 'empty')
-#     context.SUT.functions.map('guests', 'penthouse', 'empty')
+# TODO : self tests
