@@ -206,6 +206,10 @@ class BHiveTyping(object):
         # register type just takes TypeName=Function as its arguments
         # and adds to its internal dict of types
         register_type(**{name: parse_function})
+
+        #print context
+        #context.define_type(name)
+
         context.log_debug('Registered type: %s' % (name))
 
     @staticmethod
@@ -228,6 +232,7 @@ class BHiveTyping(object):
         # TODO: if enumeration not defined, then add elements like:
         #   name1, name2, name3, etc.
         # what do these look like in a .feature?
+        pass
 
     # TODO: what do with properties?
     # TODO: what to do with constraints?
@@ -262,26 +267,37 @@ class BHiveTyping(object):
 
         # register_type(Foo=brelation.BRelation.parse_from_string)
 
-    # TODO: move
-
-    # @staticmethod
-    # def define_b_sets(context):
-    #     """
-    #     Defines all basic B types NAT, NAT1
-    #     """
-    #     pass
-
 class BHiveAddressSpace(object):
+    """
+    This is the 'per machine' storage mechanism.
+    """
 
-    # TODO: These are going to have to be machine specific
+    def __init__(self, identifier):
+        self.identifier = identifier
+        self.variables = {}
+        self.variable_invariants = {}
 
-    @staticmethod
-    def declare(context, name, type):
-        pass
+    def define(self, name, typing_invariant, rhs=None):
+        """
+        defines a variable in this address space
 
-    @staticmethod
-    def define(context, name, type, expression):
-        pass
+        rhs value not required.
 
+        Note: this typing_invariant will be unioned with the machine invariant.
+        """
+        self.variables[name] = rhs
+        self.variable_invariants[name] = typing_invariant
+
+    def get(self, name):
+        """
+        returns a value with 'name' in this address space
+        """
+        return self.variables[name]
+
+    def set(self, name, rhs):
+        """
+        sets a value with name to rhs value.
+        """
+        self.variables[name] = rhs
 
 # TODO : self tests
