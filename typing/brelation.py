@@ -4,16 +4,15 @@ Relation
 A relatioship between two Sets.
 """
 
-from bhive.typing.bset import BSet
-
 from collections import defaultdict
-
 from itertools import chain
 
-#TODO: Relation step library.
+from bhive.typing.bset import BSet
+
+
+# TODO: Relation step library.
 
 class BRelation(object):
-
     """
     Maps domain set to range set.
     """
@@ -74,16 +73,16 @@ class BRelation(object):
         """
         return False
 
-    # relation and function opertor symbols
+    # relation and function operator symbols
     function_properties = {
         # maps function types to symbols:
-        partial_function: {'symbol': '+->', 'description' : 'Partial Function'},
-        total_function: {'symbol': '-->', 'description' :  'Total Function'},
-        partial_injection: {'symbol': ' >+>', 'description' : 'Partial Injection'},
-        total_injection: {'symbol': '>->', 'description' : 'Total Injection'},
-        partial_surjection: {'symbol': ' +->>', 'description' : 'Partial Surjection'},
-        total_surjection: {'symbol': ' -->>', 'description' : 'Total Surjection'},
-        total_bijection: {'symbol': '>->>', 'description' : 'Total Bijection'},
+        partial_function: {'symbol': '+->', 'description': 'Partial Function'},
+        total_function: {'symbol': '-->', 'description': 'Total Function'},
+        partial_injection: {'symbol': ' >+>', 'description': 'Partial Injection'},
+        total_injection: {'symbol': '>->', 'description': 'Total Injection'},
+        partial_surjection: {'symbol': ' +->>', 'description': 'Partial Surjection'},
+        total_surjection: {'symbol': ' -->>', 'description': 'Total Surjection'},
+        total_bijection: {'symbol': '>->>', 'description': 'Total Bijection'},
     }
 
     function_operators = {
@@ -107,36 +106,32 @@ class BRelation(object):
 
         """
         split_array = maplet_string.strip().split(' ')
-        return (split_array[0].strip(), split_array[1].strip(), split_array[2].strip())
+        return map(str.strip, split_array)
+        # return (split_array[0].strip(), split_array[1].strip(), split_array[2].strip())
 
     @staticmethod
-    def parse_from_string(string):
+    def parse_from_string(domain_set, range_set, relation_operator, relation_string):
         """
         Returns a BRelation as parsed from the comma separated maplets.
 
         E.g.:
-
         "(SET operator SET), a |-> b, a |-> d"
-
         """
-        maplet_list = string.split(',')
+        maplet_list = map(str.strip, relation_string.split(','))
 
-        print maplet_list
-
-        (domain_operand, relation_operator, range_operand) = BRelation.split_maplet(maplet_list.pop(0))
-
+        # verify operator is valid
         if relation_operator not in BRelation.function_operators:
             raise SyntaxError
 
-        new_relation = BRelation(domain_operand, range_operand, relation_operator)
+        new_relation = BRelation(domain_set, range_set, relation_operator)
 
         for current_maplet in maplet_list:
             (domain_operand, relation_operator, range_operand) = BRelation.split_maplet(current_maplet)
 
             if relation_operator != BRelation.maplet:
-                print relation_operator
                 raise SyntaxError
 
+            # need a way loosen set membership?
             new_relation[domain_operand] = range_operand
 
         # verify the rule applies
@@ -170,7 +165,12 @@ class BRelation(object):
 
     def __str__(self):
         relation_symbol = '|->' if not self.relation_rule else self.relation_rule
-        build_string = self.relation_domain + relation_rule + self.relation_range
+        build_string = ' '.join([str(self.relation_domain), self.relation_rule, str(self.relation_range), ":"])
+
+        for (k, value_set) in self.mapping.iteritems():
+            for value in value_set:
+                build_string += "".join(['\n', k, BRelation.maplet, value])
+
         return build_string
 
     def __delitem__(self, domain_element):
@@ -248,6 +248,8 @@ class BRelation(object):
         """
         Is the relation a function?
         """
+        return False
+
 
 # self tests
 
@@ -403,8 +405,11 @@ class TestBRelation(unittest.TestCase):
         """
         Tests parsing a relation from a string of maplets.
         """
-        dir(self)
-        print BRelation.parse_from_string('NUM +-> LETTERS, a |-> b, c |-> d')
+        # TODO: need to define these types.
+        vowels = BSet(['a', 'e', 'i', 'o', 'u'])
+        letters = BSet(['b', 'c', 'd', 'f'])
+        print BRelation.parse_from_string(vowels, letters, '+->', 'a |-> b, o |-> d')
+
 
 if __name__ == '__main__':
     unittest.main()

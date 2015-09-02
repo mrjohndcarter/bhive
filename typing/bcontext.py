@@ -31,6 +31,9 @@ class BContext(object):
     def is_defined(self, type_name):
         return type_name in self.types
 
+    def synthesize(self):
+        pass
+
     # def add_initialisation(self, name, initialisation):
     #     """
     #     Adds initialization for the variable name.
