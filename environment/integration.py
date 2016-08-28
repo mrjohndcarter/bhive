@@ -1,4 +1,3 @@
-from bhive.environment.environment import BHIVE_HR
 from bhive.environment.typing import BHiveTyping
 from bhive.environment.bhive_logging import BHiveLogging
 
