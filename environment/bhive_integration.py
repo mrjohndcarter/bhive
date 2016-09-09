@@ -1,6 +1,7 @@
 from bhive.environment.bhive_logging import BHiveLogging
 from bhive_context import BHiveContext
 from bhive_machine import BHiveMachine
+from bhive_operation import BHiveOperation
 
 
 class BHiveIntegration(object):
@@ -35,8 +36,12 @@ class BHiveIntegration(object):
         """
         context.log_debug('Before Scenario: %s' % scenario)
         machine_name = BHiveMachine.get_machine_name_from_feature_filename(context.feature.filename)
-        machine = context.bhive.get_machine(machine_name)
-        # machine.add_operation('test', 'hi')
+        machine = context.bhive.get_machine_by_name(machine_name)
+
+        operation_name = BHiveOperation.get_operation_name_from_scenario(context.scenario)
+        operation = BHiveOperation(operation_name)
+        machine.add_operation(operation)
+
 
     @staticmethod
     def after_scenario(context, scenario):
