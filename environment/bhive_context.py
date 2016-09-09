@@ -12,7 +12,7 @@ class BHiveContext(object):
         self.behave_context.log_info('Registered Machine: {}'.format(machine))
         self.machines[machine.name] = machine
 
-    def get_machine(self, machine_name):
+    def get_machine_by_name(self, machine_name):
         return self.machines[machine_name]
 
     def synthesize(self):
@@ -43,7 +43,7 @@ class TestBHiveContext(unittest.TestCase):
 
     def test_get_machine(self):
         self.context.register_machine(self.machine)
-        assert self.context.get_machine(self.machine.name) == self.machine
+        assert self.context.get_machine_by_name(self.machine.name) == self.machine
 
 
 if __name__ == '__main__':

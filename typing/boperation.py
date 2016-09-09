@@ -14,6 +14,7 @@ class BOperation(object):
     def __str__(self):
         return ""
 
+
 import unittest
 
 

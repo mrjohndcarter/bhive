@@ -7,6 +7,7 @@ class BHiveTyping(object):
     """
     Namespace for all BHive related typing mechanisms.
     """
+
     @staticmethod
     def register_user_type(context, name, parse_function):
         """
@@ -17,8 +18,8 @@ class BHiveTyping(object):
         # and adds to its internal dict of types
         register_type(**{name: parse_function})
 
-        #print context
-        #context.define_type(name)
+        # print context
+        # context.define_type(name)
 
         context.log_debug('Registered type: %s' % (name))
 

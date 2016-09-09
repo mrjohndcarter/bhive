@@ -18,11 +18,11 @@ class BMachine(object):
     def add_operation(self, name, operation):
         self.operations[name] = operation
 
+
 import unittest
 
 
 class TestBMachine(unittest.TestCase):
-
     """
     TestBElement
 

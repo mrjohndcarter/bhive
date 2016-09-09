@@ -5,10 +5,10 @@ Wraps python's mutable set.
 """
 from itertools import product, chain, combinations
 
-#TODO: Set step library.
+
+# TODO: Set step library.
 
 class BSet(object):
-
     """
     Augments behavior provided by set
 
@@ -164,7 +164,6 @@ import unittest
 
 
 class TestBSet(unittest.TestCase):
-
     """
     TestBSet
 
@@ -413,6 +412,7 @@ class TestBSet(unittest.TestCase):
         set_b.add(self.abc_set)
 
         assert set_a == set_b
+
 
 if __name__ == '__main__':
     unittest.main()

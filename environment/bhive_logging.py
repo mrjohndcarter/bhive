@@ -11,8 +11,8 @@ BHIVE_LOGGING_FORMAT = '%(asctime)-15s %(feature)s %(scenario)s %(step)s %(messa
 # how to format time in BHIVE_LOGGING_FORMAT
 BHIVE_LOGGING_DATE_FORMAT = '%m/%d/%Y %I:%M:%S %p'
 
-class BHiveLogging(object):
 
+class BHiveLogging(object):
     """
     Provides a namespace for logging related functions.
     """

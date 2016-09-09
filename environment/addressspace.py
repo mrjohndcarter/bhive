@@ -30,4 +30,3 @@ class BHiveAddressSpace(object):
         sets a value with name to rhs value.
         """
         self.variables[name] = rhs
-

@@ -2,11 +2,11 @@
 Represents the constraints, invariants and state of a B Machine.
 """
 
+
 # TODO create a context from the as a statement in a feature file.
 
 
 class BContext(object):
-
     """
     The data and typing elements for a B Machine.
     """
@@ -34,58 +34,59 @@ class BContext(object):
     def synthesize(self):
         pass
 
-    # def add_initialisation(self, name, initialisation):
-    #     """
-    #     Adds initialization for the variable name.
-    #     """
-    #     pass
-    #
-    # def add_invariant(self, invariant):
-    #     """
-    #     Adds a clause to the invariant.
-    #
-    #     Unions with existing invariant.
-    #     """
-    #     pass
-    #
-    # def add_set(self, name, b_set):
-    #     """
-    #     Defines a set with name.
-    #     """
-    #     self.sets[name] = b_set
-    #
-    # def define_variable(self, name):
-    #     """
-    #     Defines a variable.
-    #
-    #     Initialized using add_initialisation.
-    #     Typed using add_invariant.
-    #     """
-    #     # TODO verify no namespace collision with sets
-    #     pass
-    #
-    # def get_set(self, name):
-    #     """
-    #     Gets a set by name.
-    #     """
-    #     return self.sets[name]
-    #
-    # def is_set_defined(self, name):
-    #     """
-    #     Is the set defined?
-    #     """
-    #     return name in self.sets
-    #
-    # def register_type(self, type_name, b_type):
-    #     """
-    #     Registers a type.
-    #
-    #     b_type can be 'Set', 'Function'
-    #
-    #     Takes a type_name and a parse_function.
-    #     Will call register_type for Behave
-    #     """
-    #     pass
+        # def add_initialisation(self, name, initialisation):
+        #     """
+        #     Adds initialization for the variable name.
+        #     """
+        #     pass
+        #
+        # def add_invariant(self, invariant):
+        #     """
+        #     Adds a clause to the invariant.
+        #
+        #     Unions with existing invariant.
+        #     """
+        #     pass
+        #
+        # def add_set(self, name, b_set):
+        #     """
+        #     Defines a set with name.
+        #     """
+        #     self.sets[name] = b_set
+        #
+        # def define_variable(self, name):
+        #     """
+        #     Defines a variable.
+        #
+        #     Initialized using add_initialisation.
+        #     Typed using add_invariant.
+        #     """
+        #     # TODO verify no namespace collision with sets
+        #     pass
+        #
+        # def get_set(self, name):
+        #     """
+        #     Gets a set by name.
+        #     """
+        #     return self.sets[name]
+        #
+        # def is_set_defined(self, name):
+        #     """
+        #     Is the set defined?
+        #     """
+        #     return name in self.sets
+        #
+        # def register_type(self, type_name, b_type):
+        #     """
+        #     Registers a type.
+        #
+        #     b_type can be 'Set', 'Function'
+        #
+        #     Takes a type_name and a parse_function.
+        #     Will call register_type for Behave
+        #     """
+        #     pass
+
 
 # self tests
 
@@ -95,7 +96,6 @@ from bhive.typing.bset import BSet
 
 
 class TestBContext(unittest.TestCase):
-
     """
     TestBContext
 

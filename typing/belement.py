@@ -4,7 +4,6 @@ An element in a Set.
 
 
 class BElement(object):
-
     """
     BElement
 
@@ -20,13 +19,13 @@ class BElement(object):
     def __hash__(self):
         return hash(self.value)
 
+
 # self tests
 
 import unittest
 
 
 class TestBElement(unittest.TestCase):
-
     """
     TestBElement
 
@@ -44,6 +43,7 @@ class TestBElement(unittest.TestCase):
         assert str(self.element_a) == str(new_element_a)
         assert hash(self.element_a) == hash(new_element_a)
         assert self.element_a != new_element_a
+
 
 if __name__ == '__main__':
     unittest.main()
