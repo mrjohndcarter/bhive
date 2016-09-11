@@ -30,6 +30,10 @@ class BHiveOperation(object):
         def format_parameters_list(parameters_list):
             return '' if len(parameters_list) == 0 else ('(' + ','.join([p.name for p in parameters_list]) + ')')
 
+        @staticmethod
+        def format_parameters_list_as_precondition(parameters_list):
+            return '' if len(parameters_list) == 0 else ' & '.join([(p.name + ' : ' + p.type) for p in parameters_list])
+
     def __init__(self, name):
         self.name = name
         self.precondition = None
@@ -37,17 +41,24 @@ class BHiveOperation(object):
         self.parameters_list = []
 
     def __str__(self):
-        build_string = ' '.join(
+        build_string = ''.join(
             [self.name, BHiveOperation.OperationParameter.format_parameters_list(self.parameters_list)])
-        build_string += '='
-        build_string += '\nPRE ' + str(self.precondition)
+        build_string += ' = '
+        build_string += '\nPRE ' + (
+        BHiveOperation.OperationParameter.format_parameters_list_as_precondition(self.parameters_list) + ' & ' if len(
+            self.parameters_list) > 0 else '') + str(self.precondition)
         build_string += '\nTHEN ' + str(self.assignment)
         build_string += '\nEND'
         return build_string
 
+    def add_parameter(self, parameter):
+        # TODO check for duplicates?
+        self.parameters_list.append(parameter)
+
     @staticmethod
     def get_operation_name_from_scenario(scenario):
         return scenario.name.strip().replace(' ', '_')
+
 
 
 class TestBHiveOperation(unittest.TestCase):
@@ -75,6 +86,13 @@ class TestBHiveOperation(unittest.TestCase):
             [BHiveOperation.OperationParameter('a', 'A'),
              BHiveOperation.OperationParameter('b', 'B')]) == '(a,b)'
 
+    def test_precondition_parameter_string(self):
+        assert BHiveOperation.OperationParameter.format_parameters_list_as_precondition([]) == ''
+        assert BHiveOperation.OperationParameter.format_parameters_list_as_precondition(
+            [BHiveOperation.OperationParameter('a', 'A')]) == 'a : A'
+        assert BHiveOperation.OperationParameter.format_parameters_list_as_precondition(
+            [BHiveOperation.OperationParameter('a', 'A'),
+             BHiveOperation.OperationParameter('b', 'B')]) == 'a : A & b : B'
 
 if __name__ == '__main__':
     unittest.main()

@@ -89,10 +89,10 @@ class BHiveMachine(object):
         build_string += self.WHITE_SPACE_SEP_STRING + ', '.join([v.name for v in self.variables.values()])
         build_string += self.LINE_SEP_STRING
         build_string += 'INVARIANT'
-        build_string += self.WHITE_SPACE_SEP_STRING + ', '.join([v.invariant() for v in self.variables.values()])
+        build_string += self.WHITE_SPACE_SEP_STRING + ' & '.join([v.invariant() for v in self.variables.values()])
         build_string += self.LINE_SEP_STRING
         build_string += 'INITIALISATION'
-        build_string += self.WHITE_SPACE_SEP_STRING + ', '.join([v.initialisation() for v in self.variables.values()])
+        build_string += self.WHITE_SPACE_SEP_STRING + ' || '.join([v.initialisation() for v in self.variables.values()])
         build_string += self.LINE_SEP_STRING
 
         build_string += 'OPERATIONS'
