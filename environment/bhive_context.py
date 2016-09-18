@@ -1,15 +1,15 @@
 """
 Bucket attached to behave context that holds all internal structures.
 """
-
+import bhive.integration
 
 class BHiveContext(object):
-    def __init__(self, context):
+    def __init__(self):
         self.machines = {}
-        self.behave_context = context
 
     def register_machine(self, machine):
-        self.behave_context.log_info('Registered Machine: {}'.format(machine))
+        bhive.integration.log_info('registered machine: {}'.format(machine.name))
+        # TODO: does this need to be union'ed?
         self.machines[machine.name] = machine
 
     def get_machine_by_name(self, machine_name):

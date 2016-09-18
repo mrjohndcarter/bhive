@@ -6,7 +6,7 @@ import unittest
 from mock import Mock
 
 
-class BHiveOperation(object):
+class Operation(object):
     class Precondition(object):
         def __init__(self, expression):
             self.expression = expression
@@ -42,10 +42,10 @@ class BHiveOperation(object):
 
     def __str__(self):
         build_string = ''.join(
-            [self.name, BHiveOperation.OperationParameter.format_parameters_list(self.parameters_list)])
+            [self.name, Operation.OperationParameter.format_parameters_list(self.parameters_list)])
         build_string += ' = '
         build_string += '\nPRE ' + (
-        BHiveOperation.OperationParameter.format_parameters_list_as_precondition(self.parameters_list) + ' & ' if len(
+            Operation.OperationParameter.format_parameters_list_as_precondition(self.parameters_list) + ' & ' if len(
             self.parameters_list) > 0 else '') + str(self.precondition)
         build_string += '\nTHEN ' + str(self.assignment)
         build_string += '\nEND'
@@ -69,30 +69,30 @@ class TestBHiveOperation(unittest.TestCase):
         pass
 
     def test_creation(self):
-        operation = BHiveOperation('myOp')
+        operation = Operation('myOp')
         assert operation.name == 'myOp'
         assert not operation.precondition
 
     def test_get_operation_name_from_scenario(self):
         scenario_mock = Mock()
         scenario_mock.name = 'Start Elevator'
-        assert BHiveOperation.get_operation_name_from_scenario(scenario_mock) == 'Start_Elevator'
+        assert Operation.get_operation_name_from_scenario(scenario_mock) == 'Start_Elevator'
         scenario_mock.name = '   StopEscalator'
-        assert BHiveOperation.get_operation_name_from_scenario(scenario_mock) == 'StopEscalator'
+        assert Operation.get_operation_name_from_scenario(scenario_mock) == 'StopEscalator'
 
     def test_formatting_operation_parameter_string(self):
-        assert BHiveOperation.OperationParameter.format_parameters_list([]) == ''
-        assert BHiveOperation.OperationParameter.format_parameters_list(
-            [BHiveOperation.OperationParameter('a', 'A'),
-             BHiveOperation.OperationParameter('b', 'B')]) == '(a,b)'
+        assert Operation.OperationParameter.format_parameters_list([]) == ''
+        assert Operation.OperationParameter.format_parameters_list(
+            [Operation.OperationParameter('a', 'A'),
+             Operation.OperationParameter('b', 'B')]) == '(a,b)'
 
     def test_precondition_parameter_string(self):
-        assert BHiveOperation.OperationParameter.format_parameters_list_as_precondition([]) == ''
-        assert BHiveOperation.OperationParameter.format_parameters_list_as_precondition(
-            [BHiveOperation.OperationParameter('a', 'A')]) == 'a : A'
-        assert BHiveOperation.OperationParameter.format_parameters_list_as_precondition(
-            [BHiveOperation.OperationParameter('a', 'A'),
-             BHiveOperation.OperationParameter('b', 'B')]) == 'a : A & b : B'
+        assert Operation.OperationParameter.format_parameters_list_as_precondition([]) == ''
+        assert Operation.OperationParameter.format_parameters_list_as_precondition(
+            [Operation.OperationParameter('a', 'A')]) == 'a : A'
+        assert Operation.OperationParameter.format_parameters_list_as_precondition(
+            [Operation.OperationParameter('a', 'A'),
+             Operation.OperationParameter('b', 'B')]) == 'a : A & b : B'
 
 if __name__ == '__main__':
     unittest.main()

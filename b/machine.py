@@ -5,7 +5,7 @@ import os
 
 
 # TODO: Don't support machine parameters
-class BHiveMachine(object):
+class Machine(object):
     class Parameter(object):
         def __init__(self, name):
             self.name = name
@@ -37,14 +37,14 @@ class BHiveMachine(object):
 
     class Constant(Assignable):
         def __init__(self, name):
-            super(BHiveMachine.Constant, self).__init__(name)
+            super(Machine.Constant, self).__init__(name)
 
         def property(self):
             return ' '.join([self.name, ':', self.type, '&', self.assignment_expression])
 
     class Variable(Assignable):
         def __init__(self, name):
-            super(BHiveMachine.Variable, self).__init__(name)
+            super(Machine.Variable, self).__init__(name)
 
         def invariant(self):
             return ' '.join([self.name, ':', self.type])
@@ -159,11 +159,11 @@ class TestBHiveMachine(unittest.TestCase):
         pass
 
     def test_creation(self):
-        machine = BHiveMachine('Elevator')
+        machine = Machine('Elevator')
         assert machine.name == 'Elevator'
 
     def test_add_get_operation(self):
-        machine = BHiveMachine('Elevator')
+        machine = Machine('Elevator')
         operation = Mock(spec='_name')
         operation.name = "OpenDoor"
         machine.add_operation(operation)
@@ -171,10 +171,10 @@ class TestBHiveMachine(unittest.TestCase):
         assert machine.get_operation_by_name('OpenDoor') == operation
 
     def test_get_machine_name_from_feature_filename(self):
-        assert BHiveMachine.get_machine_name_from_feature_filename(
+        assert Machine.get_machine_name_from_feature_filename(
             'features/MACHINENAME/featurefile.feature') == 'MACHINENAME'
-        assert BHiveMachine.get_machine_name_from_feature_filename('BOB/name.feature') == 'BOB'
-        self.assertRaises(NameError, BHiveMachine.get_machine_name_from_feature_filename, 'name.feature')
+        assert Machine.get_machine_name_from_feature_filename('BOB/name.feature') == 'BOB'
+        self.assertRaises(NameError, Machine.get_machine_name_from_feature_filename, 'name.feature')
 
 
 if __name__ == '__main__':
