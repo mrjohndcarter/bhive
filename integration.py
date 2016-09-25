@@ -1,5 +1,5 @@
 from b import machine, operation
-from environment import bhive_context
+from environment import bhive_context, state
 from utilities import bhive_logging
 
 
@@ -71,11 +71,23 @@ def after_feature(context, feature):
 
 
 def before_scenario(context, scenario):
+    """
+    This is where we create the new operation.
+    """
     log_info('before_scenario: {}'.format(scenario.name))
+
+    # Step 1 -- We initialize a fresh state
+    # TODO: How to copy in the rest of the machine state
+    context.state = state.State()
 
     machine_name = machine.Machine.get_machine_name_from_feature_filename(context.feature.filename)
     temp_machine = instance.context.get_machine_by_name(machine_name)
 
+    operation_name = operation.Operation.get_operation_name_from_scenario(scenario)
+    temp_operation = operation.Operation(operation_name)
+    temp_machine.add_operation(temp_operation)
+
+    # TODO: everything below here is faked and needs to be generalized
     set = machine.Machine.Set('WICKET')
     temp_machine.add_set(set)
 
@@ -103,39 +115,30 @@ def before_scenario(context, scenario):
     variable.assignment_expression = 'WICKET * {closed_sentinel}'
     temp_machine.add_variable(variable)
 
+    variable = machine.Machine.Variable('running')
+    variable.type = 'BOOL'
+    variable.assignment_expression = 'FALSE'
+    temp_machine.add_variable(variable)
+
 
 def after_scenario(context, scenario):
+    """
+    This is where we attach the state changes to the operation.
+    """
     log_info('after_scenario: {}'.format(scenario.name))
-
-
-def before_step(context, step):
-    log_info('before_step: {}'.format(step.name))
 
     machine_name = machine.Machine.get_machine_name_from_feature_filename(context.feature.filename)
     temp_machine = instance.context.get_machine_by_name(machine_name)
 
     operation_name = operation.Operation.get_operation_name_from_scenario(context.scenario)
-    temp_operation = operation.Operation(operation_name)
-    # operation.precondition = '(current + 1) < next_ticket & current <= max_ticket'
-    # operation.assignment = 'serving(ww) := current + 1 || current := current + 1'
+    temp_operation = temp_machine.get_operation_by_name(operation_name)
 
-    # op = BHiveOperation.OperationParameter('ww','WICKET')
-    # operation.add_parameter(op)
-    temp_machine.add_operation(temp_operation)
+    temp_operation.state = context.state
 
-    if step.step_type == 'given':
-        temp_operation.precondition = step.text
-        temp_machine.add_operation(temp_operation)
-        # context.bhive.register_machine(machine)
 
-    if step.step_type == 'when':
-        temp_operation.precondition = step.text
-        temp_machine.add_operation(temp_operation)
-        # context.bhive.register_machine(machine)
-
-    if step.step_type == 'then':
-        pass
-
+def before_step(context, step):
+    log_info('before_step: {}'.format(step.name))
 
 def after_step(context, step):
     log_info('after_step: {}'.format(step.name))
+

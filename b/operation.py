@@ -1,6 +1,7 @@
 """
 
 """
+
 import unittest
 
 from mock import Mock
@@ -36,8 +37,7 @@ class Operation(object):
 
     def __init__(self, name):
         self.name = name
-        self.precondition = None
-        self.assignment = None
+        self.state = None
         self.parameters_list = []
 
     def __str__(self):
@@ -46,8 +46,8 @@ class Operation(object):
         build_string += ' = '
         build_string += '\nPRE ' + (
             Operation.OperationParameter.format_parameters_list_as_precondition(self.parameters_list) + ' & ' if len(
-            self.parameters_list) > 0 else '') + str(self.precondition)
-        build_string += '\nTHEN ' + str(self.assignment)
+                self.parameters_list) > 0 else '') + str(self.state.get_precondition())
+        build_string += '\nTHEN ' + str(self.state.get_assignment())
         build_string += '\nEND'
         return build_string
 
@@ -71,7 +71,7 @@ class TestBHiveOperation(unittest.TestCase):
     def test_creation(self):
         operation = Operation('myOp')
         assert operation.name == 'myOp'
-        assert not operation.precondition
+        assert not operation.state
 
     def test_get_operation_name_from_scenario(self):
         scenario_mock = Mock()

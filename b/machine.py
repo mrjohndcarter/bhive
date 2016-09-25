@@ -97,10 +97,6 @@ class Machine(object):
 
         build_string += 'OPERATIONS'
         build_string += self.LINE_SEP_STRING
-
-        # for operation in self.operations.values():
-        # build_string += self.LINE_SEP_STRING + str(operation)
-
         build_string += (';' + self.WHITE_SPACE_SEP_STRING).join([str(op) for op in self.operations.values()])
 
         build_string += '\nEND'
