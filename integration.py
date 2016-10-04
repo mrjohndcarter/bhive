@@ -1,6 +1,7 @@
 from b import machine, operation
 from environment import bhive_context, state
 from utilities import bhive_logging
+from utilities.parse_functions import parse_bool, parse_integer, parse_nat, parse_nat1
 
 
 class BHive_Internals(object):
@@ -40,10 +41,12 @@ def log_warning(s, extra={}):
 def before_all(context):
     # configure logging
     log_info("before_all")
-    log_info("declaring b-types")
-    # TODO: register b types
-    pass
-
+    # register b types
+    log_info("registering b-types")
+    instance.context.declare_system_type('BOOL', parse_bool)
+    instance.context.declare_system_type('INT', parse_integer)
+    instance.context.declare_system_type('NAT', parse_nat)
+    instance.context.declare_system_type('NAT1', parse_nat1)
 
 def after_all(context):
     log_info('after_all')
@@ -65,10 +68,9 @@ def before_feature(context, feature):
     # register the machine for this feature
     instance.context.register_machine(new_machine)
 
-
 def after_feature(context, feature):
     log_info('after_feature: {}'.format(feature.name))
-
+    # TODO finalize typing
 
 def before_scenario(context, scenario):
     """
@@ -88,37 +90,41 @@ def before_scenario(context, scenario):
     temp_machine.add_operation(temp_operation)
 
     # TODO: everything below here is faked and needs to be generalized
-    set = machine.Machine.Set('WICKET')
-    temp_machine.add_set(set)
+    # set = machine.Machine.Set('WICKET')
+    # temp_machine.add_set(set)
+    #
+    # set = machine.Machine.Set('NOT_DEFERRED')
+    # set.enumeration = '{a,b}'
+    # temp_machine.add_set(set)
+    #
+    # constant = machine.Machine.Constant('closed_sentinel')
+    # constant.type = 'NAT'
+    # constant.assignment_expression = 'closed_sentinel = 0'
+    # temp_machine.add_constant(constant)
 
-    set = machine.Machine.Set('NOT_DEFERRED')
-    set.enumeration = '{a,b}'
-    temp_machine.add_set(set)
+    # machine.define_constant()
+    # machine.define_variable()
+    # machine.define_set()
 
-    constant = machine.Machine.Constant('closed_sentinel')
-    constant.type = 'NAT'
-    constant.assignment_expression = 'closed_sentinel = 0'
-    temp_machine.add_constant(constant)
+    # variable = machine.Machine.Variable('next_ticket')
+    # variable.type = 'NAT'
+    # variable.assignment_expression = '1'
+    # temp_machine.add_variable(variable)
+    #
+    # variable = machine.Machine.Variable('current')
+    # variable.type = 'NAT'
+    # variable.assignment_expression = '0'
+    # temp_machine.add_variable(variable)
+    #
+    # variable = machine.Machine.Variable('serving')
+    # variable.type = 'WICKET --> NAT'
+    # variable.assignment_expression = 'WICKET * {closed_sentinel}'
+    # temp_machine.add_variable(variable)
 
-    variable = machine.Machine.Variable('next_ticket')
-    variable.type = 'NAT'
-    variable.assignment_expression = '1'
-    temp_machine.add_variable(variable)
-
-    variable = machine.Machine.Variable('current')
-    variable.type = 'NAT'
-    variable.assignment_expression = '0'
-    temp_machine.add_variable(variable)
-
-    variable = machine.Machine.Variable('serving')
-    variable.type = 'WICKET --> NAT'
-    variable.assignment_expression = 'WICKET * {closed_sentinel}'
-    temp_machine.add_variable(variable)
-
-    variable = machine.Machine.Variable('running')
-    variable.type = 'BOOL'
-    variable.assignment_expression = 'FALSE'
-    temp_machine.add_variable(variable)
+    # variable = machine.Machine.Variable('running')
+    # variable.type = 'BOOL'
+    # variable.assignment_expression = 'FALSE'
+    # temp_machine.add_variable(variable)
 
 
 def after_scenario(context, scenario):
@@ -139,6 +145,15 @@ def after_scenario(context, scenario):
 def before_step(context, step):
     log_info('before_step: {}'.format(step.name))
 
+
 def after_step(context, step):
     log_info('after_step: {}'.format(step.name))
 
+
+def declare_variable(behave_context, name, b_type, initialisation):
+    machine_name = machine.Machine.get_machine_name_from_feature_filename(behave_context.feature.filename)
+    temp_machine = instance.context.get_machine_by_name(machine_name)
+    variable = machine.Machine.Variable(name)
+    variable.type = b_type
+    variable.assignment_expression = initialisation
+    temp_machine.add_variable(variable)

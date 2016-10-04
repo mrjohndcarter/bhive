@@ -1,11 +1,14 @@
 """
 Bucket attached to behave context that holds all internal structures.
 """
+import bhive.environment
 import bhive.integration
+
 
 class BHiveContext(object):
     def __init__(self):
         self.machines = {}
+        self.typing = bhive.environment.typing.Typing()
 
     def register_machine(self, machine):
         bhive.integration.log_info('registered machine: {}'.format(machine.name))
@@ -19,6 +22,9 @@ class BHiveContext(object):
         for machine in self.machines.values():
             machine.synthesize()
 
+    def declare_system_type(self, type_name, parse_function):
+        self.typing.register_type(type_name, parse_function)
+        bhive.integration.log_info("Registered system type: {}".format(type_name))
 
 import unittest
 

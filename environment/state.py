@@ -23,6 +23,7 @@ class State(object):
         self.assignments = []
 
     def assert_that(self, lhs, operation, rhs):
+        # TODO: check type on assignment??
         temp_assertion = State.Assertion()
         temp_assertion.lhs = lhs
         temp_assertion.operation = operation
@@ -30,6 +31,7 @@ class State(object):
         self.assertions.append(temp_assertion)
 
     def assign(self, list_of_tuples):
+        # TODO: check type on assignment??
         for t in list_of_tuples:
             temp_assignment = State.Assignment()
             temp_assignment.lhs, temp_assignment.operation, temp_assignment.rhs = t

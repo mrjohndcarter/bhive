@@ -3,6 +3,7 @@ Container for a B-Machine
 """
 import os
 
+from bhive.environment.typing import Typing
 
 # TODO: Don't support machine parameters
 class Machine(object):
@@ -63,6 +64,7 @@ class Machine(object):
         self.variables = {}
         self.sets = {}
         self.parameters = []
+        self.typing = Typing()
 
     def __str__(self):
         build_string = self.WHITE_SPACE_SEP_STRING.join(['MACHINE', self.name])
@@ -76,24 +78,31 @@ class Machine(object):
                  (' & '.join([c.constraint_expression for c in self.parameters]))])
 
         build_string += self.LINE_SEP_STRING
-        build_string += 'SETS'
-        build_string += self.WHITE_SPACE_SEP_STRING + '; '.join([s.set() for s in self.sets.values()])
-        build_string += self.LINE_SEP_STRING
-        build_string += 'CONSTANTS'
-        build_string += self.WHITE_SPACE_SEP_STRING + ' & '.join([c.name for c in self.constants.values()])
-        build_string += self.LINE_SEP_STRING
-        build_string += 'PROPERTIES'
-        build_string += self.WHITE_SPACE_SEP_STRING + ' & '.join([c.property() for c in self.constants.values()])
-        build_string += self.LINE_SEP_STRING
-        build_string += 'VARIABLES'
-        build_string += self.WHITE_SPACE_SEP_STRING + ', '.join([v.name for v in self.variables.values()])
-        build_string += self.LINE_SEP_STRING
-        build_string += 'INVARIANT'
-        build_string += self.WHITE_SPACE_SEP_STRING + ' & '.join([v.invariant() for v in self.variables.values()])
-        build_string += self.LINE_SEP_STRING
-        build_string += 'INITIALISATION'
-        build_string += self.WHITE_SPACE_SEP_STRING + ' || '.join([v.initialisation() for v in self.variables.values()])
-        build_string += self.LINE_SEP_STRING
+
+        if len(self.sets.values()):
+            build_string += 'SETS'
+            build_string += self.WHITE_SPACE_SEP_STRING + '; '.join([s.set() for s in self.sets.values()])
+            build_string += self.LINE_SEP_STRING
+
+        if len(self.constants.values()):
+            build_string += 'CONSTANTS'
+            build_string += self.WHITE_SPACE_SEP_STRING + ' & '.join([c.name for c in self.constants.values()])
+            build_string += self.LINE_SEP_STRING
+            build_string += 'PROPERTIES'
+            build_string += self.WHITE_SPACE_SEP_STRING + ' & '.join([c.property() for c in self.constants.values()])
+            build_string += self.LINE_SEP_STRING
+
+        if len(self.variables.values()):
+            build_string += 'VARIABLES'
+            build_string += self.WHITE_SPACE_SEP_STRING + ', '.join([v.name for v in self.variables.values()])
+            build_string += self.LINE_SEP_STRING
+            build_string += 'INVARIANT'
+            build_string += self.WHITE_SPACE_SEP_STRING + ' & '.join([v.invariant() for v in self.variables.values()])
+            build_string += self.LINE_SEP_STRING
+            build_string += 'INITIALISATION'
+            build_string += self.WHITE_SPACE_SEP_STRING + ' || '.join(
+                [v.initialisation() for v in self.variables.values()])
+            build_string += self.LINE_SEP_STRING
 
         build_string += 'OPERATIONS'
         build_string += self.LINE_SEP_STRING
