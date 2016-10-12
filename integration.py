@@ -157,3 +157,7 @@ def declare_variable(behave_context, name, b_type, initialisation):
     variable.type = b_type
     variable.assignment_expression = initialisation
     temp_machine.add_variable(variable)
+
+
+def get_machine_by_name(machine_name):
+    return instance.context.get_machine_by_name(machine_name)

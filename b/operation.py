@@ -39,6 +39,7 @@ class Operation(object):
         self.name = name
         self.state = None
         self.parameters_list = []
+        self.test_predicates = []
 
     def __str__(self):
         build_string = ''.join(
@@ -54,6 +55,12 @@ class Operation(object):
     def add_parameter(self, parameter):
         # TODO check for duplicates?
         self.parameters_list.append(parameter)
+
+    def add_test_assertion(self, test_assertion):
+        self.test_predicates.append(test_assertion)
+
+    def synthesize_test_predicate(self):
+        return ' & '.join([str(p) for p in self.test_predicates])
 
     @staticmethod
     def get_operation_name_from_scenario(scenario):

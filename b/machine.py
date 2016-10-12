@@ -4,6 +4,7 @@ Container for a B-Machine
 import os
 
 from bhive.environment.typing import Typing
+import bhive.integration
 
 # TODO: Don't support machine parameters
 class Machine(object):
@@ -138,6 +139,9 @@ class Machine(object):
         output_file = open(self.get_filename("output"), "w")
         output_file.write(str(self))
         output_file.close()
+
+        for op in self.operations.values():
+            bhive.integration.log_info('Test Predicate: {}'.format(op.synthesize_test_predicate()))
 
     @staticmethod
     def get_machine_name_from_feature_filename(path_to_feature):
