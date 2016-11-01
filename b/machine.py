@@ -55,7 +55,7 @@ class Machine(object):
             return ' '.join([self.name, ':=', self.assignment_expression])
 
     MACHINE_EXTENSION = 'mch'
-    WHITE_SPACE_SEP_STRING = '\t\t\t\t'
+    WHITE_SPACE_SEP_STRING = '\t\t\t\t\n\n'
     LINE_SEP_STRING = '\n\n'
 
     def __init__(self, name):
