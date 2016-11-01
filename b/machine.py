@@ -64,6 +64,7 @@ class Machine(object):
         self.constants = {}
         self.variables = {}
         self.sets = {}
+        self.invariants = []
         self.parameters = []
         self.typing = Typing()
 
@@ -99,6 +100,9 @@ class Machine(object):
             build_string += self.LINE_SEP_STRING
             build_string += 'INVARIANT'
             build_string += self.WHITE_SPACE_SEP_STRING + ' & '.join([v.invariant() for v in self.variables.values()])
+            if (len(self.invariants)):
+                build_string += ' & '
+                build_string += ' & '.join(self.invariants)
             build_string += self.LINE_SEP_STRING
             build_string += 'INITIALISATION'
             build_string += self.WHITE_SPACE_SEP_STRING + ' || '.join(
@@ -121,6 +125,10 @@ class Machine(object):
 
     def add_variable(self, variable):
         self.variables[variable.name] = variable
+
+    def add_invariant(self, invariant):
+        if invariant not in self.invariants:
+            self.invariants.append(invariant)
 
     def add_constant(self, constant):
         self.constants[constant.name] = constant

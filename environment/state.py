@@ -33,6 +33,11 @@ class State(object):
         temp_assertion.rhs = rhs
         self.assertions.append(temp_assertion)
 
+    def test_that_always(self, context, lhs, test_op, rhs):
+        machine_name = machine.Machine.get_machine_name_from_feature_filename(context.feature.filename)
+        temp_machine = bhive.integration.get_machine_by_name(machine_name)
+
+        temp_machine.add_invariant('{} {} {}'.format(lhs, test_op, rhs))
 
     def test_that(self, context, lhs, test_op, rhs):
         # get the scenario we're talking about
