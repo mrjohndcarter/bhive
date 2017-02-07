@@ -144,6 +144,10 @@ class Machine(object):
 
     # UNTESTED
     def synthesize(self):
+        # check if exists, create otherwise
+        if not os.path.exists(os.path.dirname(self.get_filename("output"))):
+            os.mkdir(os.path.dirname(self.get_filename("output")))
+
         output_file = open(self.get_filename("output"), "w")
         output_file.write(str(self))
         output_file.close()
