@@ -70,7 +70,6 @@ class Machine(object):
 
     def __str__(self):
         build_string = self.WHITE_SPACE_SEP_STRING.join(['MACHINE', self.name])
-
         if len(self.parameters) > 0:
             build_string += ''.join(['(', ', '.join([p.name for p in self.parameters]), ')'])
             build_string += self.LINE_SEP_STRING
@@ -79,6 +78,9 @@ class Machine(object):
                 [(' & '.join([c.param_type() for c in self.parameters])),
                  (' & '.join([c.constraint_expression for c in self.parameters]))])
 
+        build_string += self.LINE_SEP_STRING
+        # always include for now -- hack
+        build_string += 'SEES LibraryStrings'
         build_string += self.LINE_SEP_STRING
 
         if len(self.sets.values()):

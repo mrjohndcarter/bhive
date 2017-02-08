@@ -11,6 +11,13 @@ class State(object):
         def __str__(self):
             return ' '.join([str(self.lhs), self.operation, str(self.rhs)])
 
+    class RawAssertion(Assertion):
+        def __init__(self, s):
+            self.assertion_string = s
+
+        def __str__(self):
+            return self.assertion_string
+
     class Assignment(object):
         def __init__(self):
             self.lhs = None
@@ -25,7 +32,14 @@ class State(object):
         self.assertions = []
         self.assignments = []
 
+    def ensure_that_string(self, predicate):
+        temp_assertion = State.RawAssertion(predicate)
+        self.assertions.append(temp_assertion)
+
     def ensure_that(self, lhs, operation, rhs):
+        machine_name = machine.Machine.get_machine_name_from_feature_filename(context.feature.filename)
+        temp_machine = bhive.integration.get_machine_by_name(machine_name)
+
         # TODO: check type on assignment??
         temp_assertion = State.Assertion()
         temp_assertion.lhs = lhs
