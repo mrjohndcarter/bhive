@@ -80,7 +80,9 @@ class Machine(object):
 
         build_string += self.LINE_SEP_STRING
         # always include for now -- hack
-        build_string += 'SEES LibraryStrings, CustomTypes'
+        build_string += 'SEES LibraryStrings'
+        if self.typing.has_custom_types():
+            build_string += ', CustomTypes'
         build_string += self.LINE_SEP_STRING
 
         if len(self.sets.values()):

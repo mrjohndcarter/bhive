@@ -13,6 +13,9 @@ class Typing(object):
         self.load_types('definitions/custom_types.json')
         self.include_machine = 'CustomTypes'
 
+    def has_custom_types(self):
+        return len(self.types.keys()) > 0
+
     def register_type(self, name, parse_function=(lambda x: x), enumeration=None):
         register_type(**{name:parse_function})
         self.types[name] = enumeration
