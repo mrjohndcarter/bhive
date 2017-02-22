@@ -1,8 +1,11 @@
 from b import machine, operation
 from environment import bhive_context, state
 from utilities import bhive_logging
-from utilities.parse_functions import parse_bool, parse_integer, parse_nat, parse_nat1
 
+from behave import register_type
+
+import bhive.integration
+import json
 
 class BHive_Internals(object):
     def __init__(self):
@@ -16,7 +19,6 @@ class BHive_Internals(object):
 
 
 instance = BHive_Internals()
-
 
 def log_critical(s, extra={}):
     instance.log_critical(s, extra)
@@ -43,10 +45,7 @@ def before_all(context):
     log_info("before_all")
     # register b types
     log_info("registering b-types")
-    instance.context.declare_system_type('BOOL', parse_bool)
-    instance.context.declare_system_type('INT', parse_integer)
-    instance.context.declare_system_type('NAT', parse_nat)
-    instance.context.declare_system_type('NAT1', parse_nat1)
+
 
 def after_all(context):
     log_info('after_all')
@@ -68,9 +67,11 @@ def before_feature(context, feature):
     # register the machine for this feature
     instance.context.register_machine(new_machine)
 
+
 def after_feature(context, feature):
     log_info('after_feature: {}'.format(feature.name))
     # TODO finalize typing
+
 
 def before_scenario(context, scenario):
     """
@@ -78,9 +79,10 @@ def before_scenario(context, scenario):
     """
     log_info('before_scenario: {}'.format(scenario.name))
 
-    # Step 1 -- We initialize a fresh state
     # TODO: How to copy in the rest of the machine state
     context.state = state.State()
+
+    # TODO: strip down to correct scenario name
 
     machine_name = machine.Machine.get_machine_name_from_feature_filename(context.feature.filename)
     temp_machine = instance.context.get_machine_by_name(machine_name)
@@ -89,10 +91,12 @@ def before_scenario(context, scenario):
     temp_operation = operation.Operation(operation_name)
     temp_machine.add_operation(temp_operation)
 
-    # TODO: everything below here is faked and needs to be generalized
-    # set = machine.Machine.Set('WICKET')
-    # temp_machine.add_set(set)
-    #
+    # Are we building out a deferred set?
+    #if scenario._row:
+    #    for heading in scenario._row:
+    #        set = machine.Machine.Set(heading)
+    #        temp_machine.add_set(set)
+
     # set = machine.Machine.Set('NOT_DEFERRED')
     # set.enumeration = '{a,b}'
     # temp_machine.add_set(set)
@@ -154,10 +158,11 @@ def declare_variable(behave_context, name, b_type, initialisation):
     machine_name = machine.Machine.get_machine_name_from_feature_filename(behave_context.feature.filename)
     temp_machine = instance.context.get_machine_by_name(machine_name)
     variable = machine.Machine.Variable(name)
-    variable.type = b_type
+    variable.type = b_type #todo: expand this... -- LOOK FOR IT IN TYPE?
     variable.assignment_expression = initialisation
     temp_machine.add_variable(variable)
 
 
 def get_machine_by_name(machine_name):
     return instance.context.get_machine_by_name(machine_name)
+

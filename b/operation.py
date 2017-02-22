@@ -6,6 +6,7 @@ import unittest
 
 from mock import Mock
 
+from bhive.utilities.scenario import get_normalized_scenario_name
 
 class Operation(object):
     class Precondition(object):
@@ -64,8 +65,7 @@ class Operation(object):
 
     @staticmethod
     def get_operation_name_from_scenario(scenario):
-        return scenario.name.strip().replace(' ', '_')
-
+        return get_normalized_scenario_name(scenario.name).replace(' ', '_')
 
 
 class TestBHiveOperation(unittest.TestCase):

@@ -1,14 +1,24 @@
-"""
-A Set
-
-Wraps python's mutable set.
-"""
+# """
+# A Set
+#
+# Wraps python's mutable set.
+# """
 from itertools import product, chain, combinations
 
 
-# TODO: Set step library.
-
 class BSet(object):
+    pass
+
+
+class BDeferredSet(BSet):
+    pass
+
+
+class BComprehensionSet(BSet):
+    pass
+
+
+class BEnumeratedSet(BSet):
     """
     Augments behavior provided by set
 
@@ -25,7 +35,7 @@ class BSet(object):
         element_list = []
         for an_element in string.split(','):
             element_list.append(an_element.strip())
-        return BSet(element_list)
+        return BEnumeratedSet(element_list)
 
     def __init__(self, iterable=None):
         if iterable:
@@ -43,7 +53,7 @@ class BSet(object):
         return 42
 
     def __eq__(self, iterable):
-        sym_diff = BSet(self.value.symmetric_difference(iterable))
+        sym_diff = BEnumeratedSet(self.value.symmetric_difference(iterable))
         return len(sym_diff) == 0
 
     def __iter__(self):
@@ -115,7 +125,7 @@ class BSet(object):
 
         b syntax: s Union T
         """
-        return BSet(self.value.union(iterable_t))
+        return BEnumeratedSet(self.value.union(iterable_t))
 
     def intersection(self, iterable_t):
         """
@@ -123,7 +133,7 @@ class BSet(object):
 
         b syntax: s Inters T
         """
-        return BSet(self.value.intersection(iterable_t))
+        return BEnumeratedSet(self.value.intersection(iterable_t))
 
     def difference(self, iterable_t):
         """
@@ -131,13 +141,13 @@ class BSet(object):
 
         b syntax: s - t
         """
-        return BSet(self.value.difference(iterable_t))
+        return BEnumeratedSet(self.value.difference(iterable_t))
 
     def symmetric_difference(self, iterable_t):
         """
         Returns symmetric difference of set and iterable_t
         """
-        return BSet(self.value.symmetric_difference(iterable_t))
+        return BEnumeratedSet(self.value.symmetric_difference(iterable_t))
 
     def cartestian_product(self, iterable_t):
         """
@@ -145,7 +155,7 @@ class BSet(object):
 
         Represented as a set of tuples.
         """
-        return BSet(sorted(product(self.value, iterable_t)))
+        return BEnumeratedSet(sorted(product(self.value, iterable_t)))
 
     def powerset(self):
         """
@@ -155,7 +165,7 @@ class BSet(object):
         """
         tuples = chain.from_iterable(
             combinations(self.value, r) for r in range(len(self.value) + 1))
-        return BSet(sorted([BSet(a) for a in tuples]))
+        return BEnumeratedSet(sorted([BEnumeratedSet(a) for a in tuples]))
 
 
 # self tests
@@ -171,9 +181,9 @@ class TestBSet(unittest.TestCase):
     """
 
     def setUp(self):
-        self.empty_set = BSet()
-        self.abc_set = BSet()
-        self.cde_set = BSet()
+        self.empty_set = BEnumeratedSet()
+        self.abc_set = BEnumeratedSet()
+        self.cde_set = BEnumeratedSet()
 
         self.abc_set.add('a')
         self.abc_set.add('b')
@@ -187,7 +197,7 @@ class TestBSet(unittest.TestCase):
         """
         Test equality between two BSets
         """
-        new_set_abc = BSet()
+        new_set_abc = BEnumeratedSet()
         new_set_abc.add('a')
         new_set_abc.add('b')
         new_set_abc.add('c')
@@ -204,7 +214,7 @@ class TestBSet(unittest.TestCase):
         """
         Tests creation of a new set.
         """
-        new_set_a = BSet()
+        new_set_a = BEnumeratedSet()
 
         assert self.empty_set != new_set_a
         assert str(self.empty_set) == str(new_set_a)
@@ -214,7 +224,7 @@ class TestBSet(unittest.TestCase):
         """
         Tests creation from an iterable.
         """
-        new_set_abc = BSet(['a', 'b', 'c'])
+        new_set_abc = BEnumeratedSet(['a', 'b', 'c'])
         assert new_set_abc == self.abc_set
 
     def test_parse_from_string(self):
@@ -223,13 +233,13 @@ class TestBSet(unittest.TestCase):
 
         Note: This creates a set
         """
-        assert BSet.parse_from_string('a, b, c') == self.abc_set
+        assert BEnumeratedSet.parse_from_string('a, b, c') == self.abc_set
 
     def test_add(self):
         """
         Tests adding elements to a set.
         """
-        new_set_a = BSet()
+        new_set_a = BEnumeratedSet()
 
         new_set_a.add('a')
         new_set_a.add('b')
@@ -284,7 +294,7 @@ class TestBSet(unittest.TestCase):
         """
         Test subset and superset operations.
         """
-        ab_set = BSet()
+        ab_set = BEnumeratedSet()
         ab_set.add('a')
         ab_set.add('b')
 
@@ -327,9 +337,9 @@ class TestBSet(unittest.TestCase):
         """
         Tests union operation.
         """
-        abcde_set = BSet(['a', 'b', 'c', 'd', 'e'])
+        abcde_set = BEnumeratedSet(['a', 'b', 'c', 'd', 'e'])
 
-        cde_set = BSet()
+        cde_set = BEnumeratedSet()
         cde_set.add('c')
         cde_set.add('d')
         cde_set.add('e')
@@ -342,28 +352,28 @@ class TestBSet(unittest.TestCase):
         """
         Tests intersection operation.
         """
-        assert self.abc_set.intersection(self.cde_set) == BSet(['c'])
-        assert self.abc_set.intersection(self.empty_set) == BSet()
+        assert self.abc_set.intersection(self.cde_set) == BEnumeratedSet(['c'])
+        assert self.abc_set.intersection(self.empty_set) == BEnumeratedSet()
 
     def test_difference(self):
         """
         Tests set difference.
         """
-        assert self.abc_set.difference(self.cde_set) == BSet(['a', 'b'])
-        assert self.cde_set.difference(self.abc_set) == BSet(['d', 'e'])
+        assert self.abc_set.difference(self.cde_set) == BEnumeratedSet(['a', 'b'])
+        assert self.cde_set.difference(self.abc_set) == BEnumeratedSet(['d', 'e'])
 
     def test_symmetric_difference(self):
         """
         Tests symmetric difference.
         """
         assert self.abc_set.symmetric_difference(
-            self.cde_set) == BSet(['a', 'b', 'd', 'e'])
+            self.cde_set) == BEnumeratedSet(['a', 'b', 'd', 'e'])
 
     def test_cartestian(self):
         """
         Tests calculating cartesian projection of two sets.
         """
-        cart_product_actual = BSet([])
+        cart_product_actual = BEnumeratedSet([])
         cart_product_actual.add(('a', 'c'))
         cart_product_actual.add(('a', 'd'))
         cart_product_actual.add(('a', 'e'))
@@ -385,15 +395,15 @@ class TestBSet(unittest.TestCase):
         """
         Tests calculating powerset of a set.
         """
-        power_set_actual = BSet()
-        power_set_actual.add(BSet())
-        power_set_actual.add(BSet(['a']))
-        power_set_actual.add(BSet(['b']))
-        power_set_actual.add(BSet(['c']))
-        power_set_actual.add(BSet(['a', 'b']))
-        power_set_actual.add(BSet(['a', 'c']))
-        power_set_actual.add(BSet(['b', 'c']))
-        power_set_actual.add(BSet(['a', 'b', 'c']))
+        power_set_actual = BEnumeratedSet()
+        power_set_actual.add(BEnumeratedSet())
+        power_set_actual.add(BEnumeratedSet(['a']))
+        power_set_actual.add(BEnumeratedSet(['b']))
+        power_set_actual.add(BEnumeratedSet(['c']))
+        power_set_actual.add(BEnumeratedSet(['a', 'b']))
+        power_set_actual.add(BEnumeratedSet(['a', 'c']))
+        power_set_actual.add(BEnumeratedSet(['b', 'c']))
+        power_set_actual.add(BEnumeratedSet(['a', 'b', 'c']))
 
         power_set = self.abc_set.powerset()
 
@@ -405,10 +415,10 @@ class TestBSet(unittest.TestCase):
         """
         Tests equality between two sets containing sets.
         """
-        set_a = BSet()
+        set_a = BEnumeratedSet()
         set_a.add(self.abc_set)
 
-        set_b = BSet()
+        set_b = BEnumeratedSet()
         set_b.add(self.abc_set)
 
         assert set_a == set_b

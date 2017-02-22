@@ -23,6 +23,9 @@ def parse_nat1(s):
     return value
 
 
+def parse_string(s):
+    return s
+
 import unittest
 
 

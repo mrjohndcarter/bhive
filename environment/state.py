@@ -36,7 +36,7 @@ class State(object):
         temp_assertion = State.RawAssertion(predicate)
         self.assertions.append(temp_assertion)
 
-    def ensure_that(self, lhs, operation, rhs):
+    def ensure_that(self, context, lhs, operation, rhs):
         machine_name = machine.Machine.get_machine_name_from_feature_filename(context.feature.filename)
         temp_machine = bhive.integration.get_machine_by_name(machine_name)
 

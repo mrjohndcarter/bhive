@@ -19,12 +19,13 @@ class BHiveContext(object):
         return self.machines[machine_name]
 
     def synthesize(self):
+        self.typing.synthesize()
         for machine in self.machines.values():
             machine.synthesize()
 
-    def declare_system_type(self, type_name, parse_function):
+    def declare_set(self, type_name, parse_function=(lambda x: x), enumeration=None):
         self.typing.register_type(type_name, parse_function)
-        bhive.integration.log_info("Registered system type: {}".format(type_name))
+        self.typing.register_enumeration_for_type(type_name, enumeration)
 
 import unittest
 

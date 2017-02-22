@@ -80,7 +80,7 @@ class Machine(object):
 
         build_string += self.LINE_SEP_STRING
         # always include for now -- hack
-        build_string += 'SEES LibraryStrings'
+        build_string += 'SEES LibraryStrings, CustomTypes'
         build_string += self.LINE_SEP_STRING
 
         if len(self.sets.values()):
