@@ -21,7 +21,13 @@ class Typing(object):
         self.types[name] = enumeration
 
     def load_types(self, json_filename):
-        json_file = open(json_filename, 'r')
+
+        try:
+            json_file = open(json_filename, 'r')
+        except IOError:
+            # failed to find a custom types file
+            return
+
         type_data = json.load(json_file)
         for item in type_data:
             self.register_type(name=item['set'], enumeration=item['enumeration'])
