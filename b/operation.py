@@ -47,7 +47,7 @@ class Operation(object):
             [self.name, Operation.OperationParameter.format_parameters_list(self.parameters_list)])
         build_string += ' = '
         build_string += '\nPRE ' + (
-            Operation.OperationParameter.format_parameters_list_as_precondition(self.parameters_list) + ' & ' if len(
+            Operation.OperationParameter.format_parameters_list_as_precondition(self.parameters_list) + ' ' if len(
                 self.parameters_list) > 0 else '') + str(self.state.get_precondition())
         build_string += '\nTHEN ' + str(self.state.get_assignment())
         build_string += '\nEND'
