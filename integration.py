@@ -82,8 +82,6 @@ def before_scenario(context, scenario):
     # TODO: How to copy in the rest of the machine state
     context.state = state.State()
 
-    # TODO: strip down to correct scenario name
-
     machine_name = machine.Machine.get_machine_name_from_feature_filename(context.feature.filename)
     temp_machine = instance.context.get_machine_by_name(machine_name)
 
@@ -161,6 +159,15 @@ def declare_variable(behave_context, name, b_type, initialisation):
     variable.type = b_type #todo: expand this... -- LOOK FOR IT IN TYPE?
     variable.assignment_expression = initialisation
     temp_machine.add_variable(variable)
+
+
+def declare_parameter(behave_context, name, b_type):
+    machine_name = machine.Machine.get_machine_name_from_feature_filename(behave_context.feature.filename)
+    operation_name = operation.Operation.get_operation_name_from_scenario(behave_context.scenario)
+    temp_machine = instance.context.get_machine_by_name(machine_name)
+    temp_operation = temp_machine.get_operation_by_name(operation_name)
+    temp_parameter = operation.Operation.OperationParameter(name, b_type)
+    temp_operation.add_parameter(temp_parameter)
 
 
 def get_machine_by_name(machine_name):
