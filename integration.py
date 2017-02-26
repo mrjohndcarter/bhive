@@ -43,8 +43,6 @@ def log_warning(s, extra={}):
 def before_all(context):
     # configure logging
     log_info("before_all")
-    # register b types
-    log_info("registering b-types")
 
 
 def after_all(context):
@@ -58,11 +56,11 @@ def before_feature(context, feature):
     new_machine_name = machine.Machine.get_machine_name_from_feature_filename(feature.filename)
     new_machine = machine.Machine(new_machine_name)
 
-    # TODO: where to parse this from?
-    parameter = machine.Machine.Parameter('max_ticket')
-    parameter.type = 'NAT1'
-    parameter.constraint_expression = 'max_ticket <= 10'
-    new_machine.add_parameter(parameter)
+    # # TODO: where to parse this from?
+    # parameter = machine.Machine.Parameter('max_ticket')
+    # parameter.type = 'NAT1'
+    # parameter.constraint_expression = 'max_ticket <= 10'
+    # new_machine.add_parameter(parameter)
 
     # register the machine for this feature
     instance.context.register_machine(new_machine)
