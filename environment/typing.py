@@ -10,6 +10,7 @@ class Typing(object):
     def __init__(self):
         self.types = {}
         self.constant_types = {}
+        self.constant_values = {}
         Typing.register_system_types()
         self.load_types('definitions/custom_types.json')
         self.include_machine = 'CustomTypes'
@@ -24,6 +25,9 @@ class Typing(object):
         else:
             self.types[name] = enumeration
 
+    def register_deferred_type(self, set, parse_function=(lambda x: x), cardinality=None):
+        register_type(**{set:parse_function})
+        self.types[set] = None
 
     def load_types(self, json_filename):
         try:
@@ -34,8 +38,17 @@ class Typing(object):
 
         type_data = json.load(json_file)
         for item in type_data:
-            constant_type = 'constant' in item and item['constant']
-            self.register_type(name=item['set'], enumeration=item['enumeration'], is_constant=constant_type)
+            if 'set' not in item:
+                # handle value constant
+                # not a type, just a constant a property we synthesize
+                self.constant_values[item['constant']] = item['value']
+            elif 'enumeration' not in item:
+                # handle deferred sets
+                self.register_deferred_type(**item)
+            else:
+                # handle enumerated and constant sets
+                constant_type = 'constant' in item and item['constant']
+                self.register_type(name=item['set'], enumeration=item['enumeration'], is_constant=constant_type)
         json_file.close()
 
     @staticmethod
@@ -67,14 +80,19 @@ class Typing(object):
             # check if these are strings, or other literals
             return name + ' = {' + ", ".join([str(x) for x in enumeration]) + '}'
 
+    @staticmethod
+    def string_for_constant_initialization(type_tuple):
+        (name, value) = type_tuple
+        return name + " = " + str(value)
+
     def __str__(self):
         machine_string = "MACHINE\nCustomTypes\n/* synthesized from definitions/custom_types.json*/\nSETS\n\t"
         machine_string += "; ".join(map(partial(Typing.string_for_type, True), self.types.items()))
         if len(self.constant_types):
             machine_string += "\nCONSTANTS\n\t"
-            machine_string += ", ".join(self.constant_types.keys())
+            machine_string += ", ".join(self.constant_values.keys() + self.constant_types.keys())
             machine_string += "\nPROPERTIES\n\t"
-            machine_string += " & ".join(map(partial(Typing.string_for_type, False), self.constant_types.items()))
+            machine_string += " & ".join(map(Typing.string_for_constant_initialization, self.constant_values.items()) + map(partial(Typing.string_for_type, False), self.constant_types.items()))
         machine_string += "\nEND"
         return machine_string
 
